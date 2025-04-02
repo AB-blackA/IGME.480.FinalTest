@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Mobile AR Application</title>
+    <title>Mobile AR App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,7 +32,7 @@
             z-index: 1;
         }
         
-        /* Tab buttons - larger for mobile */
+        /* Tab buttons */
         .tab-button {
             position: fixed;
             top: 15px;
@@ -59,7 +59,7 @@
             right: 15px;
         }
         
-        /* Tabs - full height on mobile */
+        /* Tabs */
         .tab {
             position: fixed;
             top: 0;
@@ -105,7 +105,7 @@
             padding: 0;
         }
         
-        /* Checkbox items - larger touch targets */
+        /* Checkbox items */
         .checkbox-item {
             margin-bottom: 12px;
             border: 1px solid #e0e0e0;
@@ -133,7 +133,7 @@
             display: block;
         }
         
-        /* Larger checkboxes for mobile */
+        /* Checkboxes */
         .checkbox-content label {
             display: block;
             padding: 10px 0;
@@ -162,50 +162,44 @@
             line-height: 1.5;
         }
         
-        /* Mobile warning - shown if accessed from desktop */
-        #desktop-warning {
-            display: none;
+        /* Marker found indicator */
+        #marker-status {
             position: fixed;
-            top: 0;
+            bottom: 20px;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            color: white;
-            z-index: 1000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            right: 0;
             text-align: center;
-        }
-        
-        @media (min-width: 768px) {
-            #desktop-warning {
-                display: flex;
-            }
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 20px;
+            margin: 0 auto;
+            width: 80%;
+            z-index: 100;
+            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Mobile Warning (shown on desktop) -->
-    <div id="desktop-warning">
-        <h2>Mobile Experience Required</h2>
-        <p>This AR application is designed for mobile devices. Please open this page on your smartphone or tablet.</p>
-        <p>For the best experience, use a device with a rear camera and access via HTTPS.</p>
-    </div>
-
     <!-- AR Scene -->
     <div id="ar-scene">
         <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
-            <!-- Marker for Hiro pattern -->
-            <a-marker preset="hiro">
-                <a-box position="0 0.5 0" material="color: #4CC3D9" scale="0.5 0.5 0.5"></a-box>
+            <!-- Hiro marker definition -->
+            <a-marker preset="hiro" id="hiro-marker">
+                <!-- This group will only be visible when marker is detected -->
+                <a-entity id="marker-content" visible="false">
+                    <a-box position="0 0.5 0" material="color: #4CC3D9" scale="0.5 0.5 0.5"></a-box>
+                    <a-text value="Hello AR!" position="0 1.2 0" align="center" color="#FFFFFF"></a-text>
+                </a-entity>
             </a-marker>
             
-            <!-- Camera -->
             <a-entity camera></a-entity>
         </a-scene>
+    </div>
+    
+    <!-- Marker status indicator -->
+    <div id="marker-status">
+        Hiro marker detected!
     </div>
     
     <!-- Tab Buttons -->
@@ -239,18 +233,6 @@
                 <label><input type="checkbox"> Promotional</label>
             </div>
         </div>
-        
-        <div class="checkbox-item">
-            <div class="checkbox-header">
-                <span>Advanced</span>
-                <span>+</span>
-            </div>
-            <div class="checkbox-content">
-                <label><input type="checkbox"> Debug mode</label>
-                <label><input type="checkbox"> Show markers</label>
-                <label><input type="checkbox"> High precision</label>
-            </div>
-        </div>
     </div>
     
     <!-- Right Tab (Help/Info) -->
@@ -259,104 +241,75 @@
         <h2>Help Center</h2>
         
         <div class="help-section">
-            <h3>Getting Started</h3>
-            <p>Point your camera at a flat surface or a Hiro marker to activate AR content. Ensure good lighting for best results.</p>
-            <p>Hold your device steadily for more stable tracking.</p>
+            <h3>Using This App</h3>
+            <p>Point your camera at a Hiro marker to see AR content. The 3D object will appear automatically when the marker is detected.</p>
+            <p>You can find Hiro markers online to print if you don't have one.</p>
         </div>
         
         <div class="help-section">
-            <h3>Using the App</h3>
-            <p>Tap the menu button (☰) to access AR options and customize your experience.</p>
-            <p>Each option can be expanded by tapping to see additional settings.</p>
-        </div>
-        
-        <div class="help-section">
-            <h3>Tips for Best Experience</h3>
-            <p>• Use in a well-lit environment</p>
-            <p>• Avoid reflective surfaces</p>
-            <p>• Keep your device steady when scanning</p>
-            <p>• Try different angles if tracking is unstable</p>
+            <h3>Marker Tips</h3>
+            <p>• Keep the marker flat on a surface</p>
+            <p>• Ensure good lighting</p>
+            <p>• Hold your device steady</p>
+            <p>• Try different angles if needed</p>
         </div>
     </div>
     
     <script>
-        // Check if mobile device
-        function isMobile() {
-            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        }
+        // Tab toggle functionality
+        document.getElementById('left-tab-button').addEventListener('click', function() {
+            document.getElementById('left-tab').classList.toggle('open');
+            document.getElementById('right-tab').classList.remove('open');
+        });
         
-        // Only proceed if mobile or if desktop warning is dismissed
-        if (isMobile() || localStorage.getItem('dismissDesktopWarning')) {
-            document.getElementById('desktop-warning').style.display = 'none';
-            
-            // Tab toggle functionality
-            function toggleTab(tabId) {
-                const tab = document.getElementById(tabId);
-                const isOpening = !tab.classList.contains('open');
-                
-                // Close all tabs first
-                document.querySelectorAll('.tab').forEach(t => {
-                    t.classList.remove('open');
-                });
-                
-                // Open the selected tab if it was closed
-                if (isOpening) {
-                    tab.classList.add('open');
-                }
-            }
-            
-            document.getElementById('left-tab-button').addEventListener('click', function() {
-                toggleTab('left-tab');
-            });
-            
-            document.getElementById('right-tab-button').addEventListener('click', function() {
-                toggleTab('right-tab');
-            });
-            
-            // Close tab buttons
-            document.querySelectorAll('.close-tab').forEach(button => {
-                button.addEventListener('click', function() {
-                    this.closest('.tab').class.remove('open');
-                });
-            });
-            
-            // Collapsible checkbox functionality
-            document.querySelectorAll('.checkbox-header').forEach(header => {
-                header.addEventListener('click', function() {
-                    const item = this.parentElement;
-                    item.classList.toggle('expanded');
-                    
-                    // Toggle the +/- icon
-                    const icon = this.querySelector('span:last-child');
-                    icon.textContent = item.classList.contains('expanded') ? '-' : '+';
-                });
-            });
-            
-            // Handle touch events more precisely
-            document.querySelectorAll('.checkbox-header, .tab-button').forEach(el => {
-                el.addEventListener('touchstart', function(e) {
-                    this.style.transform = 'scale(0.95)';
-                    e.preventDefault(); // Prevent delayed click
-                });
-                
-                el.addEventListener('touchend', function() {
-                    this.style.transform = '';
-                });
-            });
-        } else {
-            // Allow desktop users to dismiss the warning
-            document.getElementById('desktop-warning').addEventListener('click', function() {
-                localStorage.setItem('dismissDesktopWarning', 'true');
-                this.style.display = 'none';
-            });
-        }
+        document.getElementById('right-tab-button').addEventListener('click', function() {
+            document.getElementById('right-tab').classList.toggle('open');
+            document.getElementById('left-tab').classList.remove('open');
+        });
         
-        // Handle orientation changes
-        window.addEventListener('orientationchange', function() {
-            // Refresh the AR view on orientation change
+        // Close tab buttons
+        document.querySelectorAll('.close-tab').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.tab').classList.remove('open');
+            });
+        });
+        
+        // Collapsible checkbox functionality
+        document.querySelectorAll('.checkbox-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const item = this.parentElement;
+                item.classList.toggle('expanded');
+                const icon = this.querySelector('span:last-child');
+                icon.textContent = item.classList.contains('expanded') ? '-' : '+';
+            });
+        });
+        
+        // Marker detection handler
+        const marker = document.getElementById('hiro-marker');
+        const markerContent = document.getElementById('marker-content');
+        const statusIndicator = document.getElementById('marker-status');
+        
+        marker.addEventListener('markerFound', function() {
+            markerContent.setAttribute('visible', 'true');
+            statusIndicator.style.display = 'block';
             setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 300);
+                statusIndicator.style.display = 'none';
+            }, 2000);
+        });
+        
+        marker.addEventListener('markerLost', function() {
+            markerContent.setAttribute('visible', 'false');
+        });
+        
+        // Touch feedback for buttons
+        document.querySelectorAll('.tab-button, .checkbox-header').forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            button.addEventListener('touchend', function() {
+                this.style.transform = '';
+            });
         });
     </script>
 </body>
