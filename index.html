@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Mobile AR Application</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            touch-action: manipulation;
+        }
+        
+        /* AR Scene Container */
+        #ar-scene {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        /* Tab buttons - larger for mobile */
+        .tab-button {
+            position: fixed;
+            top: 15px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            -webkit-touch-callout: none;
+        }
+        
+        #left-tab-button {
+            left: 15px;
+        }
+        
+        #right-tab-button {
+            right: 15px;
+        }
+        
+        /* Tabs - full height on mobile */
+        .tab {
+            position: fixed;
+            top: 0;
+            width: 85%;
+            max-width: 300px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.97);
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 99;
+            padding: 20px 15px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        #left-tab {
+            left: 0;
+            transform: translateX(-100%);
+        }
+        
+        #right-tab {
+            right: 0;
+            transform: translateX(100%);
+        }
+        
+        .tab.open {
+            transform: translateX(0);
+        }
+        
+        /* Close button for tabs */
+        .close-tab {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        
+        /* Checkbox items - larger touch targets */
+        .checkbox-item {
+            margin-bottom: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .checkbox-header {
+            padding: 14px;
+            background: #f8f8f8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 16px;
+            user-select: none;
+        }
+        
+        .checkbox-content {
+            padding: 12px 14px;
+            display: none;
+        }
+        
+        .checkbox-item.expanded .checkbox-content {
+            display: block;
+        }
+        
+        /* Larger checkboxes for mobile */
+        .checkbox-content label {
+            display: block;
+            padding: 10px 0;
+            font-size: 15px;
+        }
+        
+        .checkbox-content input[type="checkbox"] {
+            transform: scale(1.3);
+            margin-right: 10px;
+        }
+        
+        /* Help section */
+        .help-section {
+            margin-bottom: 25px;
+        }
+        
+        .help-section h3 {
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        .help-section p {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        
+        /* Mobile warning - shown if accessed from desktop */
+        #desktop-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        @media (min-width: 768px) {
+            #desktop-warning {
+                display: flex;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Warning (shown on desktop) -->
+    <div id="desktop-warning">
+        <h2>Mobile Experience Required</h2>
+        <p>This AR application is designed for mobile devices. Please open this page on your smartphone or tablet.</p>
+        <p>For the best experience, use a device with a rear camera and access via HTTPS.</p>
+    </div>
+
+    <!-- AR Scene -->
+    <div id="ar-scene">
+        <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;">
+            <!-- Marker for Hiro pattern -->
+            <a-marker preset="hiro">
+                <a-box position="0 0.5 0" material="color: #4CC3D9" scale="0.5 0.5 0.5"></a-box>
+            </a-marker>
+            
+            <!-- Camera -->
+            <a-entity camera></a-entity>
+        </a-scene>
+    </div>
+    
+    <!-- Tab Buttons -->
+    <button class="tab-button" id="left-tab-button" aria-label="Open options">☰</button>
+    <button class="tab-button" id="right-tab-button" aria-label="Open help">?</button>
+    
+    <!-- Left Tab (Checkboxes) -->
+    <div class="tab" id="left-tab">
+        <button class="close-tab" aria-label="Close tab">×</button>
+        <h2>AR Options</h2>
+        <div class="checkbox-item">
+            <div class="checkbox-header">
+                <span>Visual Effects</span>
+                <span>+</span>
+            </div>
+            <div class="checkbox-content">
+                <label><input type="checkbox" checked> Show shadows</label>
+                <label><input type="checkbox" checked> Enable animations</label>
+                <label><input type="checkbox"> High contrast mode</label>
+            </div>
+        </div>
+        
+        <div class="checkbox-item">
+            <div class="checkbox-header">
+                <span>Content Filters</span>
+                <span>+</span>
+            </div>
+            <div class="checkbox-content">
+                <label><input type="checkbox" checked> Educational</label>
+                <label><input type="checkbox" checked> Entertainment</label>
+                <label><input type="checkbox"> Promotional</label>
+            </div>
+        </div>
+        
+        <div class="checkbox-item">
+            <div class="checkbox-header">
+                <span>Advanced</span>
+                <span>+</span>
+            </div>
+            <div class="checkbox-content">
+                <label><input type="checkbox"> Debug mode</label>
+                <label><input type="checkbox"> Show markers</label>
+                <label><input type="checkbox"> High precision</label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Right Tab (Help/Info) -->
+    <div class="tab" id="right-tab">
+        <button class="close-tab" aria-label="Close tab">×</button>
+        <h2>Help Center</h2>
+        
+        <div class="help-section">
+            <h3>Getting Started</h3>
+            <p>Point your camera at a flat surface or a Hiro marker to activate AR content. Ensure good lighting for best results.</p>
+            <p>Hold your device steadily for more stable tracking.</p>
+        </div>
+        
+        <div class="help-section">
+            <h3>Using the App</h3>
+            <p>Tap the menu button (☰) to access AR options and customize your experience.</p>
+            <p>Each option can be expanded by tapping to see additional settings.</p>
+        </div>
+        
+        <div class="help-section">
+            <h3>Tips for Best Experience</h3>
+            <p>• Use in a well-lit environment</p>
+            <p>• Avoid reflective surfaces</p>
+            <p>• Keep your device steady when scanning</p>
+            <p>• Try different angles if tracking is unstable</p>
+        </div>
+    </div>
+    
+    <script>
+        // Check if mobile device
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Only proceed if mobile or if desktop warning is dismissed
+        if (isMobile() || localStorage.getItem('dismissDesktopWarning')) {
+            document.getElementById('desktop-warning').style.display = 'none';
+            
+            // Tab toggle functionality
+            function toggleTab(tabId) {
+                const tab = document.getElementById(tabId);
+                const isOpening = !tab.classList.contains('open');
+                
+                // Close all tabs first
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('open');
+                });
+                
+                // Open the selected tab if it was closed
+                if (isOpening) {
+                    tab.classList.add('open');
+                }
+            }
+            
+            document.getElementById('left-tab-button').addEventListener('click', function() {
+                toggleTab('left-tab');
+            });
+            
+            document.getElementById('right-tab-button').addEventListener('click', function() {
+                toggleTab('right-tab');
+            });
+            
+            // Close tab buttons
+            document.querySelectorAll('.close-tab').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.tab').class.remove('open');
+                });
+            });
+            
+            // Collapsible checkbox functionality
+            document.querySelectorAll('.checkbox-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    const item = this.parentElement;
+                    item.classList.toggle('expanded');
+                    
+                    // Toggle the +/- icon
+                    const icon = this.querySelector('span:last-child');
+                    icon.textContent = item.classList.contains('expanded') ? '-' : '+';
+                });
+            });
+            
+            // Handle touch events more precisely
+            document.querySelectorAll('.checkbox-header, .tab-button').forEach(el => {
+                el.addEventListener('touchstart', function(e) {
+                    this.style.transform = 'scale(0.95)';
+                    e.preventDefault(); // Prevent delayed click
+                });
+                
+                el.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
+            });
+        } else {
+            // Allow desktop users to dismiss the warning
+            document.getElementById('desktop-warning').addEventListener('click', function() {
+                localStorage.setItem('dismissDesktopWarning', 'true');
+                this.style.display = 'none';
+            });
+        }
+        
+        // Handle orientation changes
+        window.addEventListener('orientationchange', function() {
+            // Refresh the AR view on orientation change
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 300);
+        });
+    </script>
+</body>
+</html>
