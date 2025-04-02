@@ -86,7 +86,7 @@
         }
         
         .tab.open {
-            transform: translateX(0);
+            transform: translateX(0) !important;
         }
         
         /* Close button for tabs */
@@ -103,61 +103,22 @@
             align-items: center;
             justify-content: center;
             padding: 0;
+            z-index: 101;
         }
         
-        /* Checkbox items */
-        .checkbox-item {
-            margin-bottom: 12px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        
-        .checkbox-header {
-            padding: 14px;
-            background: #f8f8f8;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-size: 16px;
-            user-select: none;
-        }
-        
-        .checkbox-content {
-            padding: 12px 14px;
-            display: none;
-        }
-        
-        .checkbox-item.expanded .checkbox-content {
-            display: block;
-        }
-        
-        /* Checkboxes */
-        .checkbox-content label {
-            display: block;
-            padding: 10px 0;
-            font-size: 15px;
-        }
-        
-        .checkbox-content input[type="checkbox"] {
-            transform: scale(1.3);
-            margin-right: 10px;
-        }
-        
-        /* Help section */
-        .help-section {
+        /* Content sections */
+        .content-section {
             margin-bottom: 25px;
         }
         
-        .help-section h3 {
+        .content-section h3 {
             border-bottom: 1px solid #e0e0e0;
             padding-bottom: 8px;
             font-size: 18px;
             margin-top: 20px;
         }
         
-        .help-section p {
+        .content-section p {
             font-size: 15px;
             line-height: 1.5;
         }
@@ -206,32 +167,21 @@
     <button class="tab-button" id="left-tab-button" aria-label="Open options">☰</button>
     <button class="tab-button" id="right-tab-button" aria-label="Open help">?</button>
     
-    <!-- Left Tab (Checkboxes) -->
+    <!-- Left Tab (Dummy Content) -->
     <div class="tab" id="left-tab">
         <button class="close-tab" aria-label="Close tab">×</button>
-        <h2>AR Options</h2>
-        <div class="checkbox-item">
-            <div class="checkbox-header">
-                <span>Visual Effects</span>
-                <span>+</span>
-            </div>
-            <div class="checkbox-content">
-                <label><input type="checkbox" checked> Show shadows</label>
-                <label><input type="checkbox" checked> Enable animations</label>
-                <label><input type="checkbox"> High contrast mode</label>
-            </div>
+        <h2>Information Panel</h2>
+        
+        <div class="content-section">
+            <h3>Section One</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl eget ultricies tincidunt, nisl nisl aliquam nisl, eget ultricies nisl nisl eget nisl.</p>
+            <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.</p>
         </div>
         
-        <div class="checkbox-item">
-            <div class="checkbox-header">
-                <span>Content Filters</span>
-                <span>+</span>
-            </div>
-            <div class="checkbox-content">
-                <label><input type="checkbox" checked> Educational</label>
-                <label><input type="checkbox" checked> Entertainment</label>
-                <label><input type="checkbox"> Promotional</label>
-            </div>
+        <div class="content-section">
+            <h3>Section Two</h3>
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+            <p>Sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
     </div>
     
@@ -240,13 +190,13 @@
         <button class="close-tab" aria-label="Close tab">×</button>
         <h2>Help Center</h2>
         
-        <div class="help-section">
+        <div class="content-section">
             <h3>Using This App</h3>
             <p>Point your camera at a Hiro marker to see AR content. The 3D object will appear automatically when the marker is detected.</p>
             <p>You can find Hiro markers online to print if you don't have one.</p>
         </div>
         
-        <div class="help-section">
+        <div class="content-section">
             <h3>Marker Tips</h3>
             <p>• Keep the marker flat on a surface</p>
             <p>• Ensure good lighting</p>
@@ -256,59 +206,71 @@
     </div>
     
     <script>
-        // Tab toggle functionality
-        document.getElementById('left-tab-button').addEventListener('click', function() {
-            document.getElementById('left-tab').classList.toggle('open');
-            document.getElementById('right-tab').classList.remove('open');
-        });
-        
-        document.getElementById('right-tab-button').addEventListener('click', function() {
-            document.getElementById('right-tab').classList.toggle('open');
-            document.getElementById('left-tab').classList.remove('open');
-        });
-        
-        // Close tab buttons
-        document.querySelectorAll('.close-tab').forEach(button => {
-            button.addEventListener('click', function() {
-                this.closest('.tab').classList.remove('open');
-            });
-        });
-        
-        // Collapsible checkbox functionality
-        document.querySelectorAll('.checkbox-header').forEach(header => {
-            header.addEventListener('click', function() {
-                const item = this.parentElement;
-                item.classList.toggle('expanded');
-                const icon = this.querySelector('span:last-child');
-                icon.textContent = item.classList.contains('expanded') ? '-' : '+';
-            });
-        });
-        
-        // Marker detection handler
-        const marker = document.getElementById('hiro-marker');
-        const markerContent = document.getElementById('marker-content');
-        const statusIndicator = document.getElementById('marker-status');
-        
-        marker.addEventListener('markerFound', function() {
-            markerContent.setAttribute('visible', 'true');
-            statusIndicator.style.display = 'block';
-            setTimeout(() => {
-                statusIndicator.style.display = 'none';
-            }, 2000);
-        });
-        
-        marker.addEventListener('markerLost', function() {
-            markerContent.setAttribute('visible', 'false');
-        });
-        
-        // Touch feedback for buttons
-        document.querySelectorAll('.tab-button, .checkbox-header').forEach(button => {
-            button.addEventListener('touchstart', function() {
-                this.style.transform = 'scale(0.95)';
+        // Simple tab toggle functionality
+        function setupTabs() {
+            const leftTabButton = document.getElementById('left-tab-button');
+            const rightTabButton = document.getElementById('right-tab-button');
+            const leftTab = document.getElementById('left-tab');
+            const rightTab = document.getElementById('right-tab');
+            const closeButtons = document.querySelectorAll('.close-tab');
+            
+            // Left tab button click handler
+            leftTabButton.addEventListener('click', function() {
+                rightTab.classList.remove('open');
+                leftTab.classList.toggle('open');
             });
             
-            button.addEventListener('touchend', function() {
-                this.style.transform = '';
+            // Right tab button click handler
+            rightTabButton.addEventListener('click', function() {
+                leftTab.classList.remove('open');
+                rightTab.classList.toggle('open');
+            });
+            
+            // Close button handlers
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.tab').classList.remove('open');
+                });
+            });
+        }
+        
+        // Marker detection functionality
+        function setupMarkerDetection() {
+            const marker = document.getElementById('hiro-marker');
+            const markerContent = document.getElementById('marker-content');
+            const statusIndicator = document.getElementById('marker-status');
+            
+            if (marker && markerContent) {
+                marker.addEventListener('markerFound', function() {
+                    markerContent.setAttribute('visible', 'true');
+                    if (statusIndicator) {
+                        statusIndicator.style.display = 'block';
+                        setTimeout(() => {
+                            statusIndicator.style.display = 'none';
+                        }, 2000);
+                    }
+                });
+                
+                marker.addEventListener('markerLost', function() {
+                    markerContent.setAttribute('visible', 'false');
+                });
+            }
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            setupTabs();
+            setupMarkerDetection();
+            
+            // Touch feedback for buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = '';
+                });
             });
         });
     </script>
