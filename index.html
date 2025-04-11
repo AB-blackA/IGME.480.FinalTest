@@ -17,7 +17,7 @@
 <body>
     <!-- AR Scene -->
    <div id="ar-scene">
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" 
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" 
      vr-mode-ui="enabled: false"
      renderer="logarithmicDepthBuffer: true; precision: medium;"
      style="width: 100%; height: 100%; position: absolute;">
@@ -28,14 +28,6 @@
         <!-- Add Directional Light -->
         <a-entity light="type: directional; color: #ffffff; intensity: 1.5" position="2 4 3"></a-entity>
         
-        <!-- Hiro marker definition -->
-        <a-marker preset="hiro" id="hiro-marker">
-            <!-- Base AR content -->
-            <a-entity id="marker-content" visible="false">
-                <a-box position="0 0.5 0" material="color: #4CC3D9; emissive: #4CC3D9; emissiveIntensity: 0.5;" scale="0.5 0.5 0.5"></a-box>
-            </a-entity>
-        </a-marker>
-        
         <!-- Container for dynamically added shapes -->
         <a-entity id="dynamic-shapes"></a-entity>
         
@@ -44,7 +36,6 @@
         
     </a-scene>
 </div>
-
 
     
     <!-- Proximity indicator -->
@@ -55,11 +46,6 @@
     <!-- Location status indicator -->
     <div id="location-status">
         Acquiring location...
-    </div>
-    
-    <!-- Marker status indicator -->
-    <div id="marker-status">
-        Hiro marker detected!
     </div>
     
     <!-- Tab Buttons -->
@@ -174,7 +160,7 @@
         
         <div class="help-section">
             <h3>Using This App</h3>
-            <p>Point your camera at a Hiro marker to see AR content. The 3D object will appear automatically when the marker is detected.</p>
+            <p>Point your camera around to see AR content. 3D objects will appear when you tap the screen.</p>
             <p>Tap anywhere on the screen to spawn random 3D objects in your environment!</p>
         </div>
         
@@ -313,29 +299,6 @@
                     icon.textContent = item.classList.contains('expanded') ? '-' : '+';
                 });
             });
-        }
-        
-        // Marker detection functionality
-        function setupMarkerDetection() {
-            const marker = document.getElementById('hiro-marker');
-            const markerContent = document.getElementById('marker-content');
-            const statusIndicator = document.getElementById('marker-status');
-            
-            if (marker && markerContent) {
-                marker.addEventListener('markerFound', function() {
-                    markerContent.setAttribute('visible', 'true');
-                    if (statusIndicator) {
-                        statusIndicator.style.display = 'block';
-                        setTimeout(() => {
-                            statusIndicator.style.display = 'none';
-                        }, 2000);
-                    }
-                });
-                
-                marker.addEventListener('markerLost', function() {
-                    markerContent.setAttribute('visible', 'false');
-                });
-            }
         }
         
         // Calculate distance between two coordinates in meters
@@ -606,7 +569,6 @@ window.dispatchEvent(new Event('resize'));
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             setupTabs();
-            setupMarkerDetection();
             setupGeolocation();
             setupTapEvents();
             
