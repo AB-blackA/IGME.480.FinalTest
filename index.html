@@ -30,28 +30,28 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw !important;
-            height: 100vh !important;
+            width: 100%;
+            height: 100%;
             z-index: 1;
             background: black;
         }
 
         a-scene {
             display: block;
-            width: 100% !important;
-            height: 100% !important;
+            width: 100%;
+            height: 100%;
         }
         
         /* Tab buttons */
         .tab-button {
             position: fixed;
-            top: 15px;
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.9);
+            top: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.95);
             border: none;
             border-radius: 50%;
-            font-size: 24px;
+            font-size: 30px;
             cursor: pointer;
             z-index: 100;
             display: flex;
@@ -62,11 +62,11 @@
         }
         
         #left-tab-button {
-            left: 15px;
+            left: 20px;
         }
         
         #right-tab-button {
-            right: 15px;
+            right: 20px;
         }
         
         /* Tabs */
@@ -74,17 +74,14 @@
             position: fixed;
             top: 0;
             width: 100%;
-            max-width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.98);
+            background: white;
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
             transition: transform 0.3s ease-out;
             z-index: 99;
-            padding: 70px 20px 20px;
+            padding: 80px 20px 20px;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-            box-sizing: border-box;
         }
         
         #left-tab {
@@ -104,13 +101,13 @@
         /* Close button for tabs */
         .close-tab {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
             background: none;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -127,13 +124,13 @@
         }
         
         .clue-header {
-            padding: 14px;
+            padding: 18px;
             background: #f8f8f8;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 20px;
             user-select: none;
         }
         
@@ -157,9 +154,10 @@
         }
         
         .clue-content {
-            padding: 12px 14px;
+            padding: 16px 18px;
             display: none;
             background: white;
+            font-size: 18px;
         }
         
         .clue-item.expanded .clue-content {
@@ -173,7 +171,6 @@
         
         .clue-content li {
             margin-bottom: 8px;
-            font-size: 14px;
             line-height: 1.4;
         }
         
@@ -185,56 +182,55 @@
         .help-section h3 {
             border-bottom: 1px solid #e0e0e0;
             padding-bottom: 8px;
-            font-size: 18px;
+            font-size: 22px;
             margin-top: 20px;
         }
         
         .help-section p {
-            font-size: 15px;
+            font-size: 18px;
             line-height: 1.5;
         }
         
         /* Status indicators */
         #location-status {
             position: fixed;
-            bottom: 70px;
+            bottom: 100px;
             left: 0;
             right: 0;
             text-align: center;
             background: rgba(0,0,0,0.7);
             color: white;
-            padding: 12px;
+            padding: 15px;
             border-radius: 12px;
             margin: 0 auto;
             width: 90%;
-            max-width: 350px;
             z-index: 100;
             display: block;
-            font-size: 16px;
+            font-size: 18px;
             line-height: 1.4;
-            white-space: pre-line;
         }
         
         #marker-status {
             position: fixed;
-            bottom: 20px;
+            bottom: 40px;
             left: 0;
             right: 0;
             text-align: center;
             background: rgba(0,0,0,0.7);
             color: white;
-            padding: 10px;
+            padding: 15px;
             border-radius: 20px;
             margin: 0 auto;
-            width: 80%;
+            width: 90%;
             z-index: 100;
             display: none;
+            font-size: 18px;
         }
         
         .tab-title {
             margin-top: 0;
             margin-bottom: 20px;
-            font-size: 22px;
+            font-size: 28px;
             color: #2c3e50;
             border-bottom: 2px solid #4CC3D9;
             padding-bottom: 8px;
@@ -242,112 +238,45 @@
         
         .expand-icon {
             font-weight: bold;
-            font-size: 18px;
-            min-width: 20px;
+            font-size: 24px;
+            min-width: 24px;
             text-align: center;
         }
         
         /* Proximity indicator */
         .proximity-indicator {
             position: fixed;
-            bottom: 120px;
+            bottom: 160px;
             left: 0;
             right: 0;
             text-align: center;
             background: rgba(76, 195, 217, 0.9);
             color: white;
-            padding: 10px;
+            padding: 15px;
             border-radius: 20px;
             margin: 0 auto;
-            width: 80%;
+            width: 90%;
             z-index: 100;
             display: none;
+            font-size: 18px;
         }
         
         /* Tap instruction */
         #tap-instruction {
             position: fixed;
-            top: 80px;
+            top: 100px;
             left: 0;
             right: 0;
             text-align: center;
             background: rgba(0,0,0,0.7);
             color: white;
-            padding: 10px;
+            padding: 15px;
             border-radius: 20px;
             margin: 0 auto;
-            width: 80%;
+            width: 90%;
             z-index: 100;
             display: none;
-        }
-
-        /* Mobile-specific styles */
-        @media screen and (max-width: 768px) {
-            .tab-button {
-                width: 60px;
-                height: 60px;
-                font-size: 30px;
-                top: 20px;
-            }
-            
-            #left-tab-button {
-                left: 20px;
-            }
-            
-            #right-tab-button {
-                right: 20px;
-            }
-            
-            .tab {
-                padding: 80px 20px 20px;
-            }
-            
-            .tab-title {
-                font-size: 28px;
-            }
-            
-            .clue-header {
-                font-size: 20px;
-                padding: 18px;
-            }
-            
-            .clue-content {
-                font-size: 18px;
-                padding: 16px 18px;
-            }
-            
-            .help-section h3 {
-                font-size: 22px;
-            }
-            
-            .help-section p {
-                font-size: 18px;
-            }
-            
-            #location-status,
-            #marker-status,
-            .proximity-indicator,
-            #tap-instruction {
-                font-size: 18px;
-                padding: 15px;
-                width: 90%;
-            }
-            
-            #location-status {
-                bottom: 100px;
-            }
-            
-            #marker-status {
-                bottom: 40px;
-            }
-            
-            .proximity-indicator {
-                bottom: 160px;
-            }
-            
-            #tap-instruction {
-                top: 100px;
-            }
+            font-size: 18px;
         }
 
         /* Temporary coordinates display */
@@ -388,8 +317,7 @@
             <!-- Container for dynamically added shapes -->
             <a-entity id="dynamic-shapes"></a-entity>
             
-            <a-entity camera="userHeight: 1.6" arjs-device-orientation-controls 
-                smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5"></a-entity>
+            <a-entity camera></a-entity>
         </a-scene>
     </div>
     
@@ -441,7 +369,80 @@
             </div>
         </div>
         
-        <!-- Rest of your clue items... -->
+        <div class="clue-item" data-location-id="1">
+            <div class="clue-header">
+                <div class="status-indicator"></div>
+                <span style="flex-grow: 1">Sylvan Waters</span>
+                <span class="expand-icon">+</span>
+            </div>
+            <div class="clue-content">
+                <ul>
+                    <li>This area of the Cemetery is a unique environment for many critters</li>
+                    <li>Found fairly central, this location is within reasonable bounds from all Cemetery entrances</li>
+                    <li>If you need a nice spot to relax in the summertime, this area's many benches may be suitable</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="clue-item" data-location-id="2">
+            <div class="clue-header">
+                <div class="status-indicator"></div>
+                <span style="flex-grow: 1">Civil War Memorial</span>
+                <span class="expand-icon">+</span>
+            </div>
+            <div class="clue-content">
+                <ul>
+                    <li>This historical site is dedicated to many who lost their lives in an infamous American war</li>
+                    <li>This site isn't just one person's gravestone, but many</li>
+                    <li>Located closest to University of Rochester entrance, this area corners between some of the more structured cemetery plots and the more wild areas</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="clue-item" data-location-id="3">
+            <div class="clue-header">
+                <div class="status-indicator"></div>
+                <span style="flex-grow: 1">Frederick Douglass' Grave</span>
+                <span class="expand-icon">+</span>
+            </div>
+            <div class="clue-content">
+                <ul>
+                    <li>This historical figure was a leading figure in the Abolitionist movement, having escaped from slavery to his home and resting place in Rochester</li>
+                    <li>His headstone is accompanied by a plaque, and several signs even point the way to it</li>
+                    <li>You may just be able to see his headstone from Mt. Hope Avenue - if you climbed atop a roof to look over the hill it stands on</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="clue-item" data-location-id="4">
+            <div class="clue-header">
+                <div class="status-indicator"></div>
+                <span style="flex-grow: 1">Garden of Remembrance</span>
+                <span class="expand-icon">+</span>
+            </div>
+            <div class="clue-content">
+                <ul>
+                    <li>This portion of Mt. Hope Cemetery is most in bloom during August, when a certain floral organization plants an incredible amount of flowers both here and around the cemetery</li>
+                    <li>While on a slight incline, this area invites you to take a safe step downward into a man-made divot</li>
+                    <li>Found just off the main path from the Southern Mt. Hope Avenue entrance, if you continued uphill from this location you would get a nice view of the surrounding areas</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="clue-item" data-location-id="5">
+            <div class="clue-header">
+                <div class="status-indicator"></div>
+                <span style="flex-grow: 1">Drummer Boy's Grave</span>
+                <span class="expand-icon">+</span>
+            </div>
+            <div class="clue-content">
+                <ul>
+                    <li>This monument to a historical figure can be found near the joining of two corners of the Cemetery</li>
+                    <li>This person dates back to the Revolutionary War, and was George Washington's Drummer Boy during that time</li>
+                    <li>While a bit tricky to find, this headstone is close to a corner plot marker and stands roughly twice as high as surrounding stones</li>
+                </ul>
+            </div>
+        </div>
     </div>
     
     <!-- Right Tab (Help/Info) -->
@@ -478,7 +479,71 @@
                 scale: "0.3 0.3 0.3",
                 position: "0 0.5 0"
             },
-            // Rest of your locations...
+            { // Sylvan Waters
+                id: 1,
+                name: "Sylvan Waters",
+                lat: 43.1278,
+                lng: -77.6202,
+                radius: 30,
+                completed: false,
+                inProximity: false,
+                color: "#33FF57",
+                shape: "sphere",
+                scale: "0.4 0.4 0.4",
+                position: "0 0.7 0"
+            },
+            { // Civil War Memorial
+                id: 2,
+                name: "Civil War Memorial",
+                lat: 43.1265,
+                lng: -77.6178,
+                radius: 25,
+                completed: false,
+                inProximity: false,
+                color: "#3357FF",
+                shape: "cylinder",
+                scale: "0.3 0.5 0.3",
+                position: "0 0.6 0"
+            },
+            { // Frederick Douglass' Grave
+                id: 3,
+                name: "Frederick Douglass' Grave",
+                lat: 43.1291,
+                lng: -77.6193,
+                radius: 20,
+                completed: false,
+                inProximity: false,
+                color: "#F033FF",
+                shape: "cone",
+                scale: "0.4 0.6 0.4",
+                position: "0 0.8 0"
+            },
+            { // Garden of Remembrance
+                id: 4,
+                name: "Garden of Remembrance",
+                lat: 43.1259,
+                lng: -77.6197,
+                radius: 35,
+                completed: false,
+                inProximity: false,
+                color: "#FF33F0",
+                shape: "torus",
+                scale: "0.4 0.4 0.4",
+                position: "0 0.5 0"
+            },
+            { // Drummer Boy's Grave
+                id: 5,
+                name: "Drummer Boy's Grave",
+                lat: 43.1287,
+                lng: -77.6215,
+                radius: 15,
+                completed: false,
+                inProximity: false,
+                color: "#33FFF0",
+                shape: "octahedron",
+                scale: "0.4 0.4 0.4",
+                position: "0 0.5 0"
+            }
         ];
 
         // Track current proximity location
@@ -487,15 +552,17 @@
         let currentLat = null;
         let currentLng = null;
 
-        // Request camera permission immediately
+        // Request camera access immediately
         function requestCameraAccess() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({ video: true })
                     .then(() => console.log("Camera access granted"))
                     .catch(err => {
                         console.error("Camera error:", err);
-                        document.getElementById('location-status').textContent = "Please enable camera permissions";
+                        alert("Please enable camera permissions for this site in your browser settings");
                     });
+            } else {
+                alert("Camera access not supported in this browser");
             }
         }
 
@@ -523,6 +590,7 @@
                 });
             });
             
+            // Collapsible clue functionality
             document.querySelectorAll('.clue-header').forEach(header => {
                 header.addEventListener('click', function() {
                     const item = this.parentElement;
@@ -558,7 +626,7 @@
         
         // Calculate distance between two coordinates in meters
         function getDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3;
+            const R = 6371e3; // Earth radius in meters
             const φ1 = lat1 * Math.PI/180;
             const φ2 = lat2 * Math.PI/180;
             const Δφ = (lat2-lat1) * Math.PI/180;
@@ -608,17 +676,6 @@
                 proximityIndicator.style.display = 'none';
                 tapInstruction.style.display = 'none';
             }
-        }
-        
-        // Show proximity alert
-        function showProximityAlert(locationName) {
-            const proximityIndicator = document.getElementById('proximity-indicator');
-            proximityIndicator.textContent = `Approaching ${locationName}!`;
-            proximityIndicator.style.display = 'block';
-            
-            setTimeout(() => {
-                proximityIndicator.style.display = 'none';
-            }, 3000);
         }
         
         // Function to mark a clue as completed
