@@ -587,48 +587,44 @@
             return R * c;
         }
         
-        // Check proximity to all locations
-        function checkProximity(lat, lng) {
-            let closestDistance = Infinity;
-            let closestLocation = null;
-            
-            LOCATIONS.forEach(location => {
-                const distance = getDistance(lat, lng, location.lat, location.lng);
-                const wasInProximity = location.inProximity;
-                location.inProximity = distance <= location.radius * 1.5;
-                
-                if (location.inProximity && distance < closestDistance) {
-                    closestDistance = distance;
-                    closestLocation = location;
-                }
-                
-                if (distance <= location.radius) {
-                    if (!location.completed) {
-                        location.completed = true;
-                        markClueCompleted(location.id);
-                    }
-                }
-                
-                if (location.inProximity && !wasInProximity && !location.completed) {
-                    showProximityAlert(location.name);
-                }
-            });
-            
-            // Update current proximity location
-            currentProximityLocation = closestLocation;
-            
-            const proximityIndicator = document.getElementById('proximity-indicator');
-            const tapInstruction = document.getElementById('tap-instruction');
-            
-            if (closestLocation && !closestLocation.completed) {
-                proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)`;
-                proximityIndicator.style.display = 'block';
-                tapInstruction.style.display = 'block';
-            } else {
-                proximityIndicator.style.display = 'none';
-                tapInstruction.style.display = 'none';
+       // Check proximity to all locations
+function checkProximity(lat, lng) {
+    let closestDistance = Infinity;
+    let closestLocation = null;
+    
+    LOCATIONS.forEach(location => {
+        const distance = getDistance(lat, lng, location.lat, location.lng);
+        const wasInProximity = location.inProximity;
+        location.inProximity = distance <= location.radius * 1.5;
+        
+        if (location.inProximity && distance < closestDistance) {
+            closestDistance = distance;
+            closestLocation = location;
+        }
+        
+        if (distance <= location.radius) {
+            if (!location.completed) {
+                location.completed = true;
+                markClueCompleted(location.id);
             }
         }
+    });
+    
+    // Update current proximity location
+    currentProximityLocation = closestLocation;
+    
+    const proximityIndicator = document.getElementById('proximity-indicator');
+    const tapInstruction = document.getElementById('tap-instruction');
+    
+    if (closestLocation && !closestLocation.completed) {
+        proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)\nYour position: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        proximityIndicator.style.display = 'block';
+        tapInstruction.style.display = 'block';
+    } else {
+        proximityIndicator.style.display = 'none';
+        tapInstruction.style.display = 'none';
+    }
+}
         
         // Show proximity alert
         function showProximityAlert(locationName) {
@@ -711,27 +707,30 @@
             });
         }
         
+        let currentLat = null;
+        let currentLng = null;
+
         // Geolocation functionality
         function setupGeolocation() {
             const locationStatus = document.getElementById('location-status');
-            
+    
             if (!navigator.geolocation) {
                 locationStatus.textContent = "Geolocation not supported";
                 locationStatus.style.display = 'block';
                 return;
             }
-            
+    
             locationStatus.style.display = 'block';
-            
+    
             // Watch user's position
             const watchId = navigator.geolocation.watchPosition(
                 function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
+                    currentLat = position.coords.latitude;
+                    currentLng = position.coords.longitude;
                     const accuracy = position.coords.accuracy;
-                    
-                    locationStatus.textContent = `Location accuracy: ${Math.round(accuracy)}m`;
-                    checkProximity(lat, lng);
+            
+                    locationStatus.textContent = `Lat: ${currentLat.toFixed(6)}, Lng: ${currentLng.toFixed(6)} (Accuracy: ${Math.round(accuracy)}m)`;
+                    checkProximity(currentLat, currentLng);
                 },
                 function(error) {
                     locationStatus.textContent = "Error getting location: " + error.message;
