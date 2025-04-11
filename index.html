@@ -819,20 +819,13 @@ function checkProximity(lat, lng) {
             
             shapesContainer.appendChild(shape);
             
-            // Show confirmation
-            const locationStatus = document.getElementById('location-status');
-            locationStatus.textContent = `Added ${props.shape} (${props.color})!`;
-            locationStatus.style.display = 'block';
-            setTimeout(() => {
-                locationStatus.style.display = 'none';
-            }, 2000);
             
             // Remove shape after 30 seconds to prevent clutter
             setTimeout(() => {
                 if (shape.parentNode) {
                     shape.parentNode.removeChild(shape);
                 }
-            }, 30000);
+            }, 3000);
         }
         
         // Setup tap event listener
@@ -887,9 +880,7 @@ function handlePosition(position) {
     currentLng = lng;
     
     locationStatus.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}\nAccuracy: ${Math.round(accuracy)}m`;
-    setTimeout(() => {
-        locationStatus.style.display = 'none';
-    }, 3000);
+locationStatus.style.display = 'block'; // Ensure it's always visible
     
     checkProximity(lat, lng);
 }
