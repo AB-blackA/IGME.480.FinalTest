@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>Mt. Hope Cemetery AR Experience</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Replace your existing viewport meta tag with this -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -15,12 +16,16 @@
         }
         
         body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            touch-action: manipulation;
-        }
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    touch-action: manipulation;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+}
         
         /* AR Scene Container */
         #ar-scene {
@@ -61,19 +66,20 @@
         
         /* Tabs */
         .tab {
-            position: fixed;
-            top: 0;
-            width: 85%;
-            max-width: 300px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.97);
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-            z-index: 99;
-            padding: 20px 15px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
+    position: fixed;
+    top: 0;
+    width: 85%;
+    max-width: 300px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    z-index: 99;
+    padding: 25px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
         
         #left-tab {
             left: 0;
@@ -264,6 +270,82 @@
             z-index: 100;
             display: none;
         }
+
+        /* Add this to your existing styles */
+@media screen and (max-width: 768px) {
+    /* Make buttons larger and more visible */
+    .tab-button {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        top: 20px;
+    }
+    
+    #left-tab-button {
+        left: 20px;
+    }
+    
+    #right-tab-button {
+        right: 20px;
+    }
+    
+    /* Make tabs full screen on mobile */
+    .tab {
+        width: 100%;
+        max-width: none;
+        padding: 30px 20px;
+    }
+    
+    /* Increase text sizes */
+    .tab-title {
+        font-size: 28px;
+    }
+    
+    .clue-header {
+        font-size: 20px;
+        padding: 18px;
+    }
+    
+    .clue-content {
+        font-size: 18px;
+        padding: 16px 18px;
+    }
+    
+    .help-section h3 {
+        font-size: 22px;
+    }
+    
+    .help-section p {
+        font-size: 18px;
+    }
+    
+    /* Make status messages more visible */
+    #location-status,
+    #marker-status,
+    .proximity-indicator,
+    #tap-instruction {
+        font-size: 18px;
+        padding: 15px;
+        width: 90%;
+    }
+    
+    /* Adjust positioning for mobile */
+    #location-status {
+        bottom: 100px;
+    }
+    
+    #marker-status {
+        bottom: 40px;
+    }
+    
+    .proximity-indicator {
+        bottom: 160px;
+    }
+    
+    #tap-instruction {
+        top: 100px;
+    }
+}
     </style>
 </head>
 <body>
@@ -306,8 +388,13 @@
     </div>
     
     <!-- Tab Buttons -->
-    <button class="tab-button" id="left-tab-button" aria-label="Open clues">☰</button>
-    <button class="tab-button" id="right-tab-button" aria-label="Open help">?</button>
+    <!-- Modify your tab buttons like this -->
+<button class="tab-button" id="left-tab-button" aria-label="Open clues">
+    <span style="font-size: inherit">☰</span>
+</button>
+<button class="tab-button" id="right-tab-button" aria-label="Open help">
+    <span style="font-size: inherit">?</span>
+</button>
     
     <!-- Left Tab (Clues) -->
     <div class="tab" id="left-tab">
