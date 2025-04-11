@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Mt. Hope Cemetery AR Experience</title>
     <!-- Replace your existing viewport meta tag with this -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -27,15 +27,15 @@
     -webkit-text-size-adjust: 100%;
 }
         
-        /* AR Scene Container */
-        #ar-scene {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
+       #ar-scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 1;
+    overflow: hidden;
+}
         
         /* Tab buttons */
         .tab-button {
@@ -351,19 +351,24 @@
     }
 
     a-scene {
-    position: absolute !important;
-    top: 0; left: 0;
-    width: 100vw !important;
-    height: 100vh !important;
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    z-index: 1;
 }
-canvas {
+
+/* Ensure the canvas fills the scene */
+.a-canvas {
     width: 100% !important;
     height: 100% !important;
     display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 }
     </style>
@@ -371,7 +376,10 @@ canvas {
 <body>
     <!-- AR Scene -->
     <div id="ar-scene">
-        <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" vr-mode-ui="enabled: false">
+        <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" 
+         vr-mode-ui="enabled: false"
+         renderer="logarithmicDepthBuffer: true; precision: medium;"
+         style="width: 100%; height: 100%; position: absolute;">
             <!-- Hiro marker definition -->
             <a-marker preset="hiro" id="hiro-marker">
                 <!-- Base AR content -->
@@ -931,7 +939,17 @@ locationStatus.style.display = 'block'; // Ensure it's always visible
         highAccuracyOptions
     );
 }
-        
+        // Handle window resize
+window.addEventListener('resize', function() {
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        scene.style.width = window.innerWidth + 'px';
+        scene.style.height = window.innerHeight + 'px';
+    }
+});
+
+// Force initial resize
+window.dispatchEvent(new Event('resize'));
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             setupTabs();
