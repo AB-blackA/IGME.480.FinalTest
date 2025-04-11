@@ -366,6 +366,29 @@ canvas {
     display: block;
 }
 
+    /* Force fix for AR.js video feed misalignment on mobile */
+#arjs-video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+    z-index: 0;
+}
+
+    video {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    object-fit: cover !important;
+    z-index: 0 !important;
+}
+
+
+
 }
     </style>
 </head>
@@ -939,16 +962,7 @@ function handlePosition(position) {
             });
         });
     </script>
-    <script>
-  window.addEventListener('load', () => {
-    const sceneEl = document.querySelector('a-scene');
-    if (sceneEl && sceneEl.hasLoaded) {
-      sceneEl.resize();
-    } else {
-      sceneEl.addEventListener('loaded', () => sceneEl.resize());
-    }
-  });
-</script>
+   
 
 </body>
 </html>
