@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Mt. Hope Cemetery AR Experience</title>
     <!-- Replace your existing viewport meta tag with this -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
@@ -16,42 +16,25 @@
         }
         
         body {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            touch-action: manipulation;
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    touch-action: manipulation;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+}
         
+        /* AR Scene Container */
         #ar-scene {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw !important;
-            height: 100vh !important;
+            width: 100%;
+            height: 100%;
             z-index: 1;
-            background: black;
-        }
-
-        a-scene {
-            display: block;
-            width: 100% !important;
-            height: 100% !important;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
         
         /* Tab buttons */
@@ -83,20 +66,20 @@
         
         /* Tabs */
         .tab {
-            position: fixed;
-            top: 0;
-            width: 85%;
-            max-width: 300px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.97);
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-            z-index: 99;
-            padding: 25px 20px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            overscroll-behavior: contain;
-        }
+    position: fixed;
+    top: 0;
+    width: 85%;
+    max-width: 300px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    z-index: 99;
+    padding: 25px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
         
         #left-tab {
             left: 0;
@@ -207,24 +190,24 @@
         
         /* Status indicators */
         #location-status {
-            position: fixed;
-            bottom: 70px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 0 auto;
-            width: 90%;
-            max-width: 350px;
-            z-index: 100;
-            display: none;
-            font-size: 16px;
-            line-height: 1.4;
-            white-space: pre-line;
-        }
+    position: fixed;
+    bottom: 70px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    margin: 0 auto;
+    width: 90%;
+    max-width: 350px;
+    z-index: 100;
+    display: none;
+    font-size: 16px;
+    line-height: 1.4;
+    white-space: pre-line;
+}
         
         #marker-status {
             position: fixed;
@@ -292,116 +275,88 @@
             display: none;
         }
 
-        /* Coordinate display */
-        .coordinate-display {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            z-index: 1000;
-            text-align: center;
-            font-family: monospace;
-            font-size: 18px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
         /* Add this to your existing styles */
-        @media screen and (max-width: 768px) {
-            /* Make buttons larger and more visible */
-            .tab-button {
-                width: 60px;
-                height: 60px;
-                font-size: 30px;
-                top: 20px;
-            }
-            
-            #left-tab-button {
-                left: 20px;
-            }
-            
-            #right-tab-button {
-                right: 20px;
-            }
-            
-            /* Make tabs full screen on mobile */
-            .tab {
-                width: 100%;
-                max-width: none;
-                padding: 30px 20px;
-            }
-            
-            /* Increase text sizes */
-            .tab-title {
-                font-size: 28px;
-            }
-            
-            .clue-header {
-                font-size: 20px;
-                padding: 18px;
-            }
-            
-            .clue-content {
-                font-size: 18px;
-                padding: 16px 18px;
-            }
-            
-            .help-section h3 {
-                font-size: 22px;
-            }
-            
-            .help-section p {
-                font-size: 18px;
-            }
-            
-            /* Make status messages more visible */
-            #location-status,
-            #marker-status,
-            .proximity-indicator,
-            #tap-instruction {
-                font-size: 18px;
-                padding: 15px;
-                width: 90%;
-            }
-            
-            /* Adjust positioning for mobile */
-            #location-status {
-                bottom: 100px;
-            }
-            
-            #marker-status {
-                bottom: 40px;
-            }
-            
-            .proximity-indicator {
-                bottom: 160px;
-            }
-            
-            #tap-instruction {
-                top: 100px;
-            }
-            
-            .coordinate-display {
-                font-size: 22px;
-                padding: 25px;
-            }
-        }
+@media screen and (max-width: 768px) {
+    /* Make buttons larger and more visible */
+    .tab-button {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        top: 20px;
+    }
+    
+    #left-tab-button {
+        left: 20px;
+    }
+    
+    #right-tab-button {
+        right: 20px;
+    }
+    
+    /* Make tabs full screen on mobile */
+    .tab {
+        width: 100%;
+        max-width: none;
+        padding: 30px 20px;
+    }
+    
+    /* Increase text sizes */
+    .tab-title {
+        font-size: 28px;
+    }
+    
+    .clue-header {
+        font-size: 20px;
+        padding: 18px;
+    }
+    
+    .clue-content {
+        font-size: 18px;
+        padding: 16px 18px;
+    }
+    
+    .help-section h3 {
+        font-size: 22px;
+    }
+    
+    .help-section p {
+        font-size: 18px;
+    }
+    
+    /* Make status messages more visible */
+    #location-status,
+    #marker-status,
+    .proximity-indicator,
+    #tap-instruction {
+        font-size: 18px;
+        padding: 15px;
+        width: 90%;
+    }
+    
+    /* Adjust positioning for mobile */
+    #location-status {
+        bottom: 100px;
+    }
+    
+    #marker-status {
+        bottom: 40px;
+    }
+    
+    .proximity-indicator {
+        bottom: 160px;
+    }
+    
+    #tap-instruction {
+        top: 100px;
+    }
+}
     </style>
 </head>
 <body>
     <!-- AR Scene -->
     <div id="ar-scene">
-        <a-scene 
-            embedded 
-            arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" 
-            renderer="logarithmicDepthBuffer: true; antialias: true; alpha: false;"
-            vr-mode-ui="enabled: false">
-            
+        // Modify your a-scene initialization to:
+<a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" vr-mode-ui="enabled: false">
             <!-- Hiro marker definition -->
             <a-marker preset="hiro" id="hiro-marker">
                 <!-- Base AR content -->
@@ -413,19 +368,10 @@
             <!-- Container for dynamically added shapes -->
             <a-entity id="dynamic-shapes"></a-entity>
             
-            <!-- Container for tap model -->
-            <a-entity id="tap-model" visible="false">
-                <a-cone color="tomato" radius-bottom="0.5" radius-top="0" height="1" position="0 0.5 0"></a-cone>
-                <a-text value="Location" color="white" align="center" position="0 1.2 0" scale="2 2 2"></a-text>
-            </a-entity>
-            
-            <!-- Camera setup -->
-            <a-entity camera="userHeight: 1.6" arjs-device-orientation-controls smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5"></a-entity>
+            <!-- In your a-scene, modify the camera to: -->
+<a-entity camera="userHeight: 1.6" arjs-device-orientation-controls smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5"></a-entity>
         </a-scene>
     </div>
-    
-    <!-- Coordinate display (hidden by default) -->
-    <div id="coordinate-display" class="coordinate-display"></div>
     
     <!-- Tap instruction -->
     <div id="tap-instruction">
@@ -448,12 +394,13 @@
     </div>
     
     <!-- Tab Buttons -->
-    <button class="tab-button" id="left-tab-button" aria-label="Open clues">
-        <span style="font-size: inherit">☰</span>
-    </button>
-    <button class="tab-button" id="right-tab-button" aria-label="Open help">
-        <span style="font-size: inherit">?</span>
-    </button>
+    <!-- Modify your tab buttons like this -->
+<button class="tab-button" id="left-tab-button" aria-label="Open clues">
+    <span style="font-size: inherit">☰</span>
+</button>
+<button class="tab-button" id="right-tab-button" aria-label="Open help">
+    <span style="font-size: inherit">?</span>
+</button>
     
     <!-- Left Tab (Clues) -->
     <div class="tab" id="left-tab">
@@ -655,8 +602,6 @@
         // Track current proximity location
         let currentProximityLocation = null;
         let shapeCounter = 0;
-        let currentLat = null;
-        let currentLng = null;
 
         // Simple tab toggle functionality
         function setupTabs() {
@@ -735,44 +680,44 @@
             return R * c;
         }
         
-        // Check proximity to all locations
-        function checkProximity(lat, lng) {
-            let closestDistance = Infinity;
-            let closestLocation = null;
-            
-            LOCATIONS.forEach(location => {
-                const distance = getDistance(lat, lng, location.lat, location.lng);
-                const wasInProximity = location.inProximity;
-                location.inProximity = distance <= location.radius * 1.5;
-                
-                if (location.inProximity && distance < closestDistance) {
-                    closestDistance = distance;
-                    closestLocation = location;
-                }
-                
-                if (distance <= location.radius) {
-                    if (!location.completed) {
-                        location.completed = true;
-                        markClueCompleted(location.id);
-                    }
-                }
-            });
-            
-            // Update current proximity location
-            currentProximityLocation = closestLocation;
-            
-            const proximityIndicator = document.getElementById('proximity-indicator');
-            const tapInstruction = document.getElementById('tap-instruction');
-            
-            if (closestLocation && !closestLocation.completed) {
-                proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)\nYour position: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                proximityIndicator.style.display = 'block';
-                tapInstruction.style.display = 'block';
-            } else {
-                proximityIndicator.style.display = 'none';
-                tapInstruction.style.display = 'none';
+       // Check proximity to all locations
+function checkProximity(lat, lng) {
+    let closestDistance = Infinity;
+    let closestLocation = null;
+    
+    LOCATIONS.forEach(location => {
+        const distance = getDistance(lat, lng, location.lat, location.lng);
+        const wasInProximity = location.inProximity;
+        location.inProximity = distance <= location.radius * 1.5;
+        
+        if (location.inProximity && distance < closestDistance) {
+            closestDistance = distance;
+            closestLocation = location;
+        }
+        
+        if (distance <= location.radius) {
+            if (!location.completed) {
+                location.completed = true;
+                markClueCompleted(location.id);
             }
         }
+    });
+    
+    // Update current proximity location
+    currentProximityLocation = closestLocation;
+    
+    const proximityIndicator = document.getElementById('proximity-indicator');
+    const tapInstruction = document.getElementById('tap-instruction');
+    
+    if (closestLocation && !closestLocation.completed) {
+        proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)\nYour position: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        proximityIndicator.style.display = 'block';
+        tapInstruction.style.display = 'block';
+    } else {
+        proximityIndicator.style.display = 'none';
+        tapInstruction.style.display = 'none';
+    }
+}
         
         // Show proximity alert
         function showProximityAlert(locationName) {
@@ -846,135 +791,118 @@
             }, 2000);
         }
         
-        // Show coordinates and model when screen is tapped
-        function showCoordinatesAndModel(lat, lng) {
-            const coordinateDisplay = document.getElementById('coordinate-display');
-            const tapModel = document.getElementById('tap-model');
-            
-            // Update coordinate display
-            coordinateDisplay.innerHTML = `
-                <div>Current Location:</div>
-                <div>Latitude: ${lat.toFixed(6)}</div>
-                <div>Longitude: ${lng.toFixed(6)}</div>
-            `;
-            coordinateDisplay.style.opacity = '1';
-            
-            // Show the 3D model
-            tapModel.setAttribute('visible', 'true');
-            
-            // Position the model in front of the camera
-            const camera = document.querySelector('[camera]');
-            if (camera) {
-                const cameraPosition = camera.getAttribute('position');
-                if (cameraPosition) {
-                    tapModel.setAttribute('position', {
-                        x: cameraPosition.x,
-                        y: cameraPosition.y,
-                        z: cameraPosition.z - 1 // 1 meter in front of camera
-                    });
-                }
-            }
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                coordinateDisplay.style.opacity = '0';
-                tapModel.setAttribute('visible', 'false');
-            }, 3000);
-        }
-        
+        // Setup tap event listener
         function setupTapEvents() {
-            // Use both touch and click events for mobile/desktop
-            document.addEventListener('click', handleTap);
-            document.addEventListener('touchend', handleTap);
-        }
-
-        function handleTap(e) {
-            // Prevent double triggers
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // If we have coordinates, show them with a model
-            if (currentLat !== null && currentLng !== null) {
-                showCoordinatesAndModel(currentLat, currentLng);
-            }
-            
-            // Original shape-adding functionality
-            if (currentProximityLocation) {
-                addLocationShape();
-            }
+            document.addEventListener('click', function() {
+                if (currentProximityLocation) {
+                    addLocationShape();
+                }
+            });
         }
         
+        let currentLat = null;
+        let currentLng = null;
+
         function setupGeolocation() {
-            const locationStatus = document.getElementById('location-status');
-            
-            if (!navigator.geolocation) {
-                locationStatus.textContent = "Geolocation not supported";
-                locationStatus.style.display = 'block';
-                return;
-            }
-            
-            locationStatus.style.display = 'block';
-            locationStatus.textContent = "Acquiring precise location...";
-            
-            // First try with high accuracy
-            const highAccuracyOptions = {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 10000
-            };
-            
-            const fallbackOptions = {
-                enableHighAccuracy: false,
-                maximumAge: 30000,
-                timeout: 15000
-            };
-            
-            function handlePosition(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                const accuracy = position.coords.accuracy;
-                
-                currentLat = lat;
-                currentLng = lng;
-                
-                locationStatus.innerHTML = `
-                    <div>Lat: ${lat.toFixed(6)}</div>
-                    <div>Lng: ${lng.toFixed(6)}</div>
-                    <div>Accuracy: ${Math.round(accuracy)}m</div>
-                `;
-                locationStatus.style.display = 'block';
-                
-                checkProximity(lat, lng);
-            }
-            
-            function handleError(error) {
-                let message = "Error: ";
-                switch(error.code) {
-                    case error.PERMISSION_DENIED:
-                        message += "Location permission denied";
-                        break;
-                    case error.POSITION_UNAVAILABLE:
-                        message += "Location unavailable";
-                        break;
-                    case error.TIMEOUT:
-                        message += "Location request timed out";
-                        break;
-                    default:
-                        message += "Unknown error";
-                }
-                locationStatus.textContent = message;
-            }
-            
-            // Start with high accuracy request
-            navigator.geolocation.getCurrentPosition(handlePosition, handleError, highAccuracyOptions);
-            
-            // Then set up the watcher with best available settings
-            navigator.geolocation.watchPosition(
-                handlePosition,
-                handleError,
-                highAccuracyOptions
-            );
+    const locationStatus = document.getElementById('location-status');
+    
+    if (!navigator.geolocation) {
+        locationStatus.textContent = "Geolocation not supported";
+        locationStatus.style.display = 'block';
+        return;
+    }
+    
+    locationStatus.style.display = 'block';
+    locationStatus.textContent = "Acquiring precise location...";
+    
+    // First try with high accuracy
+    const highAccuracyOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000
+    };
+    
+    const fallbackOptions = {
+        enableHighAccuracy: false,
+        maximumAge: 30000,
+        timeout: 15000
+    };
+    
+    // Modify the handlePosition function in setupGeolocation():
+function handlePosition(position) {
+    const lat = position.coords.latitude;
+    const lng = position.coords.longitude;
+    const accuracy = position.coords.accuracy;
+    
+    // Validate the position isn't wildly inaccurate
+    if (accuracy > 1000) { // If accuracy is worse than 1km
+        locationStatus.textContent = `Low accuracy (${Math.round(accuracy)}m)\nLat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}`;
+        navigator.geolocation.getCurrentPosition(handlePosition, handleError, fallbackOptions);
+        return;
+    }
+    
+    currentLat = lat;
+    currentLng = lng;
+    
+    locationStatus.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}\nAccuracy: ${Math.round(accuracy)}m`;
+    setTimeout(() => {
+        locationStatus.style.display = 'none';
+    }, 3000);
+    
+    checkProximity(lat, lng);
+}
+
+            function showTemporaryCoordinates(lat, lng) {
+    const tempDisplay = document.createElement('div');
+    tempDisplay.style.position = 'fixed';
+    tempDisplay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    tempDisplay.style.color = 'white';
+    tempDisplay.style.padding = '10px';
+    tempDisplay.style.borderRadius = '5px';
+    tempDisplay.style.zIndex = '1000';
+    
+    // Random position on screen
+    const x = Math.random() * (window.innerWidth - 200) + 50;
+    const y = Math.random() * (window.innerHeight - 100) + 50;
+    tempDisplay.style.left = `${x}px`;
+    tempDisplay.style.top = `${y}px`;
+    
+    tempDisplay.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}`;
+    document.body.appendChild(tempDisplay);
+    
+    setTimeout(() => {
+        tempDisplay.remove();
+    }, 3000);
+}
+    
+    function handleError(error) {
+        let message = "Error: ";
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                message += "Location permission denied";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                message += "Location unavailable";
+                break;
+            case error.TIMEOUT:
+                message += "Location request timed out";
+                break;
+            default:
+                message += "Unknown error";
         }
+        locationStatus.textContent = message;
+    }
+    
+    // Start with high accuracy request
+    navigator.geolocation.getCurrentPosition(handlePosition, handleError, highAccuracyOptions);
+    
+    // Then set up the watcher with best available settings
+    const watchId = navigator.geolocation.watchPosition(
+        handlePosition,
+        handleError,
+        highAccuracyOptions
+    );
+}
         
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
