@@ -710,38 +710,105 @@ function checkProximity(lat, lng) {
         let currentLat = null;
         let currentLng = null;
 
-        // Geolocation functionality
         function setupGeolocation() {
-            const locationStatus = document.getElementById('location-status');
+    const locationStatus = document.getElementById('location-status');
     
-            if (!navigator.geolocation) {
-                locationStatus.textContent = "Geolocation not supported";
-                locationStatus.style.display = 'block';
-                return;
-            }
+    if (!navigator.geolocation) {
+        locationStatus.textContent = "Geolocation not supported";
+        locationStatus.style.display = 'block';
+        return;
+    }
     
-            locationStatus.style.display = 'block';
+    locationStatus.style.display = 'block';
+    locationStatus.textContent = "Acquiring precise location...";
     
-            // Watch user's position
-            const watchId = navigator.geolocation.watchPosition(
-                function(position) {
-                    currentLat = position.coords.latitude;
-                    currentLng = position.coords.longitude;
-                    const accuracy = position.coords.accuracy;
-            
-                    locationStatus.textContent = `Lat: ${currentLat.toFixed(6)}, Lng: ${currentLng.toFixed(6)} (Accuracy: ${Math.round(accuracy)}m)`;
-                    checkProximity(currentLat, currentLng);
-                },
-                function(error) {
-                    locationStatus.textContent = "Error getting location: " + error.message;
-                },
-                {
-                    enableHighAccuracy: true,
-                    maximumAge: 10000,
-                    timeout: 5000
-                }
-            );
+    // First try with high accuracy
+    const highAccuracyOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000
+    };
+    
+    const fallbackOptions = {
+        enableHighAccuracy: false,
+        maximumAge: 30000,
+        timeout: 15000
+    };
+    
+    function handlePosition(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        
+        // Validate the position isn't wildly inaccurate
+        if (accuracy > 1000) { // If accuracy is worse than 1km
+            locationStatus.textContent = `Low accuracy (${Math.round(accuracy)}m). Trying again...`;
+            navigator.geolocation.getCurrentPosition(handlePosition, handleError, fallbackOptions);
+            return;
         }
+        
+        currentLat = lat;
+        currentLng = lng;
+        
+        locationStatus.textContent = `Location acquired (Accuracy: ${Math.round(accuracy)}m)`;
+        setTimeout(() => {
+            locationStatus.style.display = 'none';
+        }, 3000);
+        
+        checkProximity(lat, lng);
+    }
+
+            function showTemporaryCoordinates(lat, lng) {
+    const tempDisplay = document.createElement('div');
+    tempDisplay.style.position = 'fixed';
+    tempDisplay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+    tempDisplay.style.color = 'white';
+    tempDisplay.style.padding = '10px';
+    tempDisplay.style.borderRadius = '5px';
+    tempDisplay.style.zIndex = '1000';
+    
+    // Random position on screen
+    const x = Math.random() * (window.innerWidth - 200) + 50;
+    const y = Math.random() * (window.innerHeight - 100) + 50;
+    tempDisplay.style.left = `${x}px`;
+    tempDisplay.style.top = `${y}px`;
+    
+    tempDisplay.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}`;
+    document.body.appendChild(tempDisplay);
+    
+    setTimeout(() => {
+        tempDisplay.remove();
+    }, 3000);
+}
+    
+    function handleError(error) {
+        let message = "Error: ";
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                message += "Location permission denied";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                message += "Location unavailable";
+                break;
+            case error.TIMEOUT:
+                message += "Location request timed out";
+                break;
+            default:
+                message += "Unknown error";
+        }
+        locationStatus.textContent = message;
+    }
+    
+    // Start with high accuracy request
+    navigator.geolocation.getCurrentPosition(handlePosition, handleError, highAccuracyOptions);
+    
+    // Then set up the watcher with best available settings
+    const watchId = navigator.geolocation.watchPosition(
+        handlePosition,
+        handleError,
+        highAccuracyOptions
+    );
+}
         
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
