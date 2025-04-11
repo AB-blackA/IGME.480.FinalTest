@@ -365,30 +365,6 @@ canvas {
     height: 100% !important;
     display: block;
 }
-
-    /* Force fix for AR.js video feed misalignment on mobile */
-#arjs-video {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    object-fit: cover !important;
-    z-index: 0;
-}
-
-    video {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    object-fit: cover !important;
-    z-index: 0 !important;
-}
-
-
-
 }
     </style>
 </head>
@@ -962,39 +938,5 @@ function handlePosition(position) {
             });
         });
     </script>
-   <script>
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    const video = document.querySelector('video');
-    if (video) {
-      console.log('🎥 Found video, adjusting styles');
-
-      // Force full screen again just in case
-      video.style.position = 'fixed';
-      video.style.top = '0';
-      video.style.left = '0';
-      video.style.width = '100vw';
-      video.style.height = '100vh';
-      video.style.objectFit = 'cover';
-      video.style.zIndex = '-1';
-
-      // Optional: Resize the canvas too
-      const canvas = document.querySelector('canvas');
-      if (canvas) {
-        canvas.style.position = 'fixed';
-        canvas.style.top = '0';
-        canvas.style.left = '0';
-        canvas.style.width = '100vw';
-        canvas.style.height = '100vh';
-        canvas.style.zIndex = '0';
-      }
-    } else {
-      console.warn('🚫 No video element found after 2s');
-    }
-  }, 2000); // wait for AR.js to fully insert and configure video
-});
-</script>
-
-
 </body>
 </html>
