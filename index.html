@@ -181,7 +181,7 @@
                 // lng: -77.615,
                 lat: 43.083,
                 lng: -77.676,
-                radius: 20,
+                radius: 100,
                 completed: false,
                 inProximity: false,
                 color: "#FF5733",
@@ -488,18 +488,20 @@ function handlePosition(position) {
     const lng = position.coords.longitude;
     const accuracy = position.coords.accuracy;
     
-    // Validate the position isn't wildly inaccurate
-    if (accuracy > 1000) { // If accuracy is worse than 1km
-        locationStatus.textContent = `Low accuracy (${Math.round(accuracy)}m)\nLat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}`;
-        navigator.geolocation.getCurrentPosition(handlePosition, handleError, fallbackOptions);
-        return;
+    console.log(`Raw position: ${lat}, ${lng} (±${accuracy}m)`);
+    
+    // During testing, let's be more lenient with accuracy
+    const MAX_TESTING_ACCURACY = 50; // meters - adjust as needed
+    if (accuracy > MAX_TESTING_ACCURACY) {
+        console.warn(`Low accuracy (${Math.round(accuracy)}m), but proceeding for testing`);
+        // Continue anyway for testing purposes
     }
     
     currentLat = lat;
     currentLng = lng;
     
     locationStatus.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}\nAccuracy: ${Math.round(accuracy)}m`;
-locationStatus.style.display = 'block'; // Ensure it's always visible
+    locationStatus.style.display = 'block';
     
     checkProximity(lat, lng);
 }
