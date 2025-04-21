@@ -15,15 +15,12 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .fade-out {
-        animation: fadeOut 5s forwards;
-    }
-    @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0; }
-    }
-    .unlit {
-        material: "shader: flat; color: white";
-    }
+            animation: fadeOut 5s forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
     </style>
 </head>
 <body>
@@ -431,112 +428,75 @@ function checkProximity(lat, lng) {
             };
         }
         
-        function addVotedSticker(screenX, screenY) {
-    const imagesContainer = document.getElementById('dynamic-images');
-    imageCounter++;
-    
-    // Create a new image entity
-    const image = document.createElement('a-image');
-    image.setAttribute('id', `image-${imageCounter}`);
-    image.setAttribute('src', 'img/iVotedSticker.png');
-    image.setAttribute('scale', '0.1 0.1 0.1'); // Scaled down to 10%
-    image.setAttribute('look-at', '[camera]');
-    image.setAttribute('class', 'unlit'); // Add unlit class
-    image.setAttribute('material', 'shader: flat; transparent: true; alphaTest: 0.5');
-    
-    // Convert screen coordinates to world position
-    const scene = document.querySelector('a-scene');
-    const camera = document.querySelector('[camera]');
-    
-    // Position 1 meter away from camera in the clicked direction
-    const position = screenToWorld(screenX, screenY, 1);
-    image.setAttribute('position', position);
-    
-    // Add fade-out animation
-    image.classList.add('fade-out');
-    
-    imagesContainer.appendChild(image);
-    
-    // Remove image after animation completes
-    setTimeout(() => {
-        if (image.parentNode) {
-            image.parentNode.removeChild(image);
+        // Add a random shape to the scene
+        function addRandomShape() {
+            const shapesContainer = document.getElementById('dynamic-shapes');
+            const props = getRandomShapeProperties();
+            shapeCounter++;
+            
+            // Create a new shape entity
+            const shape = document.createElement('a-entity');
+            shape.setAttribute('id', `shape-${shapeCounter}`);
+            shape.setAttribute('visible', 'true');
+            
+            // Create the shape
+            shape.innerHTML = `
+                <a-${props.shape} 
+                    position="${props.position}"
+                    material="color: ${props.color}"
+                    scale="${props.scale}"
+                    rotation="${props.rotation}">
+                </a-${props.shape}>
+            `;
+            
+            shapesContainer.appendChild(shape);
+            
+            // Remove shape after 30 seconds to prevent clutter
+            setTimeout(() => {
+                if (shape.parentNode) {
+                    shape.parentNode.removeChild(shape);
+                }
+            }, 3000);
         }
-    }, 5000);
-}
-
-// Helper function to convert screen coordinates to world position
-function screenToWorld(x, y, distance) {
-    const camera = document.querySelector('[camera]').object3D;
-    const scene = document.querySelector('a-scene');
-    
-    // Convert screen coordinates to normalized device coordinates
-    const ndcX = (x / window.innerWidth) * 2 - 1;
-    const ndcY = -(y / window.innerHeight) * 2 + 1;
-    
-    // Create a vector and unproject it
-    const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
-    vector.unproject(camera);
-    
-    // Calculate direction from camera
-    const dir = vector.sub(camera.position).normalize();
-    
-    // Calculate position at given distance
-    const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-    
-    return `${pos.x} ${pos.y} ${pos.z}`;
-}
-
-// Modified addRandomShape function to ensure visibility
-function addRandomShape(screenX, screenY) {
-    const shapesContainer = document.getElementById('dynamic-shapes');
-    const props = getRandomShapeProperties();
-    shapeCounter++;
-    
-    // Create a new shape entity
-    const shape = document.createElement('a-entity');
-    shape.setAttribute('id', `shape-${shapeCounter}`);
-    shape.setAttribute('visible', 'true');
-    
-    // Convert screen coordinates to world position
-    const position = screenToWorld(screenX, screenY, 1 + Math.random() * 2);
-    
-    // Create the shape with emissive material for better visibility
-    shape.innerHTML = `
-        <a-${props.shape} 
-            position="${position}"
-            material="color: ${props.color}; shader: flat; emissive: ${props.color}; emissiveIntensity: 1"
-            scale="${props.scale}"
-            rotation="${props.rotation}">
-        </a-${props.shape}>
-    `;
-    
-    shapesContainer.appendChild(shape);
-    
-    // Remove shape after 30 seconds to prevent clutter
-    setTimeout(() => {
-        if (shape.parentNode) {
-            shape.parentNode.removeChild(shape);
-        }
-    }, 3000);
-}
-
-// Modified tap event handler
-function setupTapEvents() {
-    document.addEventListener('click', function(e) {
-        // Get click coordinates
-        const x = e.clientX || e.touches[0].clientX;
-        const y = e.clientY || e.touches[0].clientY;
         
-        if (currentProximityLocation && currentProximityLocation.id === 0) {
-            // Near Susan B. Anthony's grave - show sticker at tap position
-            addVotedSticker(x, y);
-        } else {
-            // Not near a special location - show random shape at tap position
-            addRandomShape(x, y);
+        // Add the "I Voted" sticker image to the scene
+        function addVotedSticker() {
+            const imagesContainer = document.getElementById('dynamic-images');
+            imageCounter++;
+            
+            // Create a new image entity
+            const image = document.createElement('a-image');
+            image.setAttribute('id', `image-${imageCounter}`);
+            image.setAttribute('src', 'img/iVotedSticker.png');
+            image.setAttribute('position', '0 0 -1'); // 1 meter in front of camera
+            image.setAttribute('scale', '0.1 0.1 0.1'); // Scaled down to 10%
+            image.setAttribute('look-at', '[camera]');
+            
+            // Add fade-out animation
+            image.classList.add('fade-out');
+            
+            imagesContainer.appendChild(image);
+            
+            // Remove image after animation completes
+            setTimeout(() => {
+                if (image.parentNode) {
+                    image.parentNode.removeChild(image);
+                }
+            }, 5000);
         }
-    });
-}
+        
+        // Setup tap event listener
+        function setupTapEvents() {
+            document.addEventListener('click', function() {
+                if (currentProximityLocation && currentProximityLocation.id === 0) {
+                    // Near Susan B. Anthony's grave - show sticker
+                    addVotedSticker();
+                } else {
+                    // Not near a special location - show random shape
+                    addRandomShape();
+                }
+            });
+        }
         
         let currentLat = null;
         let currentLng = null;
