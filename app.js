@@ -160,7 +160,6 @@ function getRandomShapeProperties() {
     };
 }
 
-// Add a random shape to the scene
 function addRandomShape() {
     const shapesContainer = document.getElementById('dynamic-shapes');
     const props = getRandomShapeProperties();
@@ -171,11 +170,11 @@ function addRandomShape() {
     shape.setAttribute('id', `shape-${shapeCounter}`);
     shape.setAttribute('visible', 'true');
     
-    // Create the shape
+    // Create the shape with flat shading
     shape.innerHTML = `
         <a-${props.shape} 
             position="${props.position}"
-            material="color: ${props.color}"
+            material="color: ${props.color}; shader: flat"
             scale="${props.scale}"
             rotation="${props.rotation}">
         </a-${props.shape}>
@@ -191,7 +190,6 @@ function addRandomShape() {
     }, 3000);
 }
 
-// Add the "I Voted" sticker image to the scene
 function addVotedSticker() {
     const imagesContainer = document.getElementById('dynamic-images');
     imageCounter++;
@@ -202,6 +200,7 @@ function addVotedSticker() {
     image.setAttribute('src', 'img/iVotedSticker.png');
     image.setAttribute('position', '0 0 -1'); // 1 meter in front of camera
     image.setAttribute('scale', '0.1 0.1 0.1'); // Scaled down to 10%
+    image.setAttribute('material', 'shader: flat');
     image.setAttribute('look-at', '[camera]');
     
     // Add fade-out animation
