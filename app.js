@@ -1,4 +1,5 @@
-// Main application functionality
+// Possible shapes for random generation
+const SHAPES = ['box', 'sphere', 'cylinder', 'cone', 'torus', 'octahedron', 'tetrahedron', 'dodecahedron', 'icosahedron'];
 
 // Track current proximity location
 let currentProximityLocation = null;
@@ -6,16 +7,6 @@ let shapeCounter = 0;
 let imageCounter = 0;
 let currentLat = null;
 let currentLng = null;
-
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    setupTabs();
-    setupGeolocation();
-    setupTapEvents();
-    
-    // Force initial resize
-    window.dispatchEvent(new Event('resize'));
-});
 
 // Simple tab toggle functionality
 function setupTabs() {
@@ -98,12 +89,15 @@ function checkProximity(lat, lng) {
     currentProximityLocation = closestLocation;
     
     const proximityIndicator = document.getElementById('proximity-indicator');
+    const tapInstruction = document.getElementById('tap-instruction');
     
     if (closestLocation && !closestLocation.completed) {
         proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)\nYour position: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
         proximityIndicator.style.display = 'block';
+        tapInstruction.style.display = 'block';
     } else {
         proximityIndicator.style.display = 'none';
+        tapInstruction.style.display = 'none';
     }
 }
 
@@ -261,6 +255,7 @@ function setupGeolocation() {
         timeout: 15000
     };
     
+    // Modify the handlePosition function in setupGeolocation():
     function handlePosition(position) {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
@@ -282,6 +277,29 @@ function setupGeolocation() {
         locationStatus.style.display = 'block';
         
         checkProximity(lat, lng);
+    }
+
+    function showTemporaryCoordinates(lat, lng) {
+        const tempDisplay = document.createElement('div');
+        tempDisplay.style.position = 'fixed';
+        tempDisplay.style.backgroundColor = 'rgba(0,0,0,0.7)';
+        tempDisplay.style.color = 'white';
+        tempDisplay.style.padding = '10px';
+        tempDisplay.style.borderRadius = '5px';
+        tempDisplay.style.zIndex = '1000';
+        
+        // Random position on screen
+        const x = Math.random() * (window.innerWidth - 200) + 50;
+        const y = Math.random() * (window.innerHeight - 100) + 50;
+        tempDisplay.style.left = `${x}px`;
+        tempDisplay.style.top = `${y}px`;
+        
+        tempDisplay.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}`;
+        document.body.appendChild(tempDisplay);
+        
+        setTimeout(() => {
+            tempDisplay.remove();
+        }, 3000);
     }
     
     function handleError(error) {
@@ -320,4 +338,28 @@ window.addEventListener('resize', function() {
         scene.style.width = window.innerWidth + 'px';
         scene.style.height = window.innerHeight + 'px';
     }
+});
+
+// Force initial resize
+window.dispatchEvent(new Event('resize'));
+
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    setupTabs();
+    setupGeolocation();
+    setupTapEvents();
+    
+    // Show tap instruction by default
+    document.getElementById('tap-instruction').style.display = 'block';
+    
+    // Touch feedback for buttons
+    document.querySelectorAll('.tab-button, .clue-header').forEach(button => {
+        button.addEventListener('touchstart', function() {
+            this.style.transform = 'scale(0.95)';
+        });
+        
+        button.addEventListener('touchend', function() {
+            this.style.transform = '';
+        });
+    });
 });

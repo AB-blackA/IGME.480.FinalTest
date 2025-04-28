@@ -3,6 +3,8 @@ const LOCATIONS = [
     { // Susan B. Anthony's Grave
         id: 0,
         name: "Susan B. Anthony's Grave",
+        // lat: 43.134,
+        // lng: -77.615,
         lat: 43.083,
         lng: -77.676,
         radius: 100,
@@ -79,6 +81,3 @@ const LOCATIONS = [
         position: "0 0.5 0"
     }
 ];
-
-// Possible shapes for random generation
-const SHAPES = ['box', 'sphere', 'cylinder', 'cone', 'torus', 'octahedron', 'tetrahedron', 'dodecahedron', 'icosahedron'];
