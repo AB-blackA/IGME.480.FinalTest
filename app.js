@@ -1,17 +1,23 @@
-// Track current proximity location and shape counter
+// Main application functionality
+
+// Track current proximity location
 let currentProximityLocation = null;
 let shapeCounter = 0;
+let imageCounter = 0;
+let currentLat = null;
+let currentLng = null;
 
-// Initialize the application
-function init() {
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
     setupTabs();
     setupGeolocation();
     setupTapEvents();
-    renderClueItems();
-    setupTouchFeedback();
-}
+    
+    // Force initial resize
+    window.dispatchEvent(new Event('resize'));
+});
 
-// Set up tab functionality
+// Simple tab toggle functionality
 function setupTabs() {
     const leftTabButton = document.getElementById('left-tab-button');
     const rightTabButton = document.getElementById('right-tab-button');
@@ -19,47 +25,26 @@ function setupTabs() {
     const rightTab = document.getElementById('right-tab');
     const closeButtons = document.querySelectorAll('.close-tab');
     
-    leftTabButton.addEventListener('click', () => toggleTab(leftTab, rightTab));
-    rightTabButton.addEventListener('click', () => toggleTab(rightTab, leftTab));
+    // Left tab button click handler
+    leftTabButton.addEventListener('click', function() {
+        rightTab.classList.remove('open');
+        leftTab.classList.toggle('open');
+    });
     
+    // Right tab button click handler
+    rightTabButton.addEventListener('click', function() {
+        leftTab.classList.remove('open');
+        rightTab.classList.toggle('open');
+    });
+    
+    // Close button handlers
     closeButtons.forEach(button => {
         button.addEventListener('click', function() {
             this.closest('.tab').classList.remove('open');
         });
     });
-}
-
-function toggleTab(openTab, closeTab) {
-    closeTab.classList.remove('open');
-    openTab.classList.toggle('open');
-}
-
-// Render clue items in the left tab
-function renderClueItems() {
-    const leftTab = document.getElementById('left-tab');
     
-    LOCATIONS.forEach(location => {
-        const clueItem = document.createElement('div');
-        clueItem.className = 'clue-item';
-        clueItem.dataset.locationId = location.id;
-        
-        clueItem.innerHTML = `
-            <div class="clue-header">
-                <div class="status-indicator"></div>
-                <span style="flex-grow: 1">${location.name}</span>
-                <span class="expand-icon">+</span>
-            </div>
-            <div class="clue-content">
-                <ul>
-                    ${location.clues.map(clue => `<li>${clue}</li>`).join('')}
-                </ul>
-            </div>
-        `;
-        
-        leftTab.appendChild(clueItem);
-    });
-    
-    // Set up collapsible functionality
+    // Collapsible clue functionality
     document.querySelectorAll('.clue-header').forEach(header => {
         header.addEventListener('click', function() {
             const item = this.parentElement;
@@ -70,98 +55,7 @@ function renderClueItems() {
     });
 }
 
-// Set up geolocation
-function setupGeolocation() {
-    const locationStatus = document.getElementById('location-status');
-    
-    if (!navigator.geolocation) {
-        showLocationError("Geolocation not supported by your browser");
-        return;
-    }
-    
-    locationStatus.style.display = 'block';
-    
-    const options = {
-        enableHighAccuracy: true,
-        maximumAge: 10000,
-        timeout: 15000 // Increased timeout to 15 seconds
-    };
-    
-    navigator.geolocation.watchPosition(
-        handlePositionSuccess,
-        handlePositionError,
-        options
-    );
-}
-
-function handlePositionSuccess(position) {
-    const lat = position.coords.latitude;
-    const lng = position.coords.longitude;
-    const accuracy = position.coords.accuracy;
-    
-    updateLocationStatus(lat, lng, accuracy);
-    checkProximity(lat, lng);
-}
-
-function handlePositionError(error) {
-    let message = "Error getting location: ";
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            message += "User denied the request for geolocation.";
-            break;
-        case error.POSITION_UNAVAILABLE:
-            message += "Location information is unavailable.";
-            break;
-        case error.TIMEOUT:
-            message += "The request to get location timed out.";
-            break;
-        case error.UNKNOWN_ERROR:
-            message += "An unknown error occurred.";
-            break;
-    }
-    showLocationError(message);
-}
-
-function updateLocationStatus(lat, lng, accuracy) {
-    const locationStatus = document.getElementById('location-status');
-    locationStatus.textContent = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)} | Accuracy: ${Math.round(accuracy)}m`;
-    locationStatus.style.display = 'block';
-}
-
-function showLocationError(message) {
-    const locationStatus = document.getElementById('location-status');
-    locationStatus.textContent = message;
-    locationStatus.style.display = 'block';
-}
-
-// Check proximity to locations
-function checkProximity(lat, lng) {
-    let closestDistance = Infinity;
-    let closestLocation = null;
-    
-    LOCATIONS.forEach(location => {
-        const distance = getDistance(lat, lng, location.lat, location.lng);
-        const wasInProximity = location.inProximity;
-        location.inProximity = distance <= location.radius * 1.5;
-        
-        if (location.inProximity && distance < closestDistance) {
-            closestDistance = distance;
-            closestLocation = location;
-        }
-        
-        if (distance <= location.radius && !location.completed) {
-            location.completed = true;
-            markClueCompleted(location.id);
-        }
-        
-        if (location.inProximity && !wasInProximity && !location.completed) {
-            showProximityAlert(location.name);
-        }
-    });
-    
-    updateProximityUI(closestLocation, closestDistance);
-}
-
+// Calculate distance between two coordinates in meters
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // Earth radius in meters
     const φ1 = lat1 * Math.PI/180;
@@ -177,91 +71,253 @@ function getDistance(lat1, lon1, lat2, lon2) {
     return R * c;
 }
 
-function updateProximityUI(closestLocation, closestDistance) {
+// Check proximity to all locations
+function checkProximity(lat, lng) {
+    let closestDistance = Infinity;
+    let closestLocation = null;
+    
+    LOCATIONS.forEach(location => {
+        const distance = getDistance(lat, lng, location.lat, location.lng);
+        const wasInProximity = location.inProximity;
+        location.inProximity = distance <= location.radius * 1.5;
+        
+        if (location.inProximity && distance < closestDistance) {
+            closestDistance = distance;
+            closestLocation = location;
+        }
+        
+        if (distance <= location.radius) {
+            if (!location.completed) {
+                location.completed = true;
+                markClueCompleted(location.id);
+            }
+        }
+    });
+    
+    // Update current proximity location
     currentProximityLocation = closestLocation;
+    
     const proximityIndicator = document.getElementById('proximity-indicator');
-    const tapInstruction = document.getElementById('tap-instruction');
     
     if (closestLocation && !closestLocation.completed) {
-        proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)`;
+        proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)\nYour position: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
         proximityIndicator.style.display = 'block';
-        tapInstruction.style.display = 'block';
     } else {
         proximityIndicator.style.display = 'none';
-        tapInstruction.style.display = 'none';
     }
 }
 
+// Show proximity alert
 function showProximityAlert(locationName) {
     const proximityIndicator = document.getElementById('proximity-indicator');
     proximityIndicator.textContent = `Approaching ${locationName}!`;
     proximityIndicator.style.display = 'block';
-    setTimeout(() => proximityIndicator.style.display = 'none', 3000);
+    
+    setTimeout(() => {
+        proximityIndicator.style.display = 'none';
+    }, 3000);
 }
 
+// Function to mark a clue as completed
 function markClueCompleted(clueIndex) {
-    const indicator = document.querySelector(`.clue-item[data-location-id="${clueIndex}"] .status-indicator`);
-    if (indicator) {
+    const clues = document.querySelectorAll('.clue-item');
+    if (clueIndex >= 0 && clueIndex < clues.length) {
+        const indicator = clues[clueIndex].querySelector('.status-indicator');
         indicator.classList.add('completed');
-        showLocationStatusMessage(`Visited ${LOCATIONS[clueIndex].name}!`);
+        
+        const locationStatus = document.getElementById('location-status');
+        locationStatus.textContent = `Visited ${LOCATIONS[clueIndex].name}!`;
+        locationStatus.style.display = 'block';
+        setTimeout(() => {
+            locationStatus.style.display = 'none';
+        }, 3000);
     }
 }
 
-function showLocationStatusMessage(message) {
-    const locationStatus = document.getElementById('location-status');
-    locationStatus.textContent = message;
-    locationStatus.style.display = 'block';
-    setTimeout(() => locationStatus.style.display = 'none', 3000);
+// Generate a random color in hex format
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
-// Set up tap to add shapes
+// Generate random properties for a shape
+function getRandomShapeProperties() {
+    const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    const color = getRandomColor();
+    const size = 0.2 + Math.random() * 0.6; // Random size between 0.2 and 0.8
+    const scale = `${size} ${size} ${size}`;
+    
+    // Random position in front of camera (1-3 meters away)
+    const distance = 1 + Math.random() * 2;
+    const angle = Math.random() * Math.PI * 2; // Random angle around the camera
+    const xOffset = Math.cos(angle) * 0.5; // Random x position within 0.5m radius
+    const zOffset = Math.sin(angle) * 0.5; // Random z position within 0.5m radius
+    
+    return {
+        shape: shape,
+        color: color,
+        scale: scale,
+        position: `${xOffset} ${0.5} -${distance}`, // Position in front of camera
+        rotation: `${Math.random() * 360} ${Math.random() * 360} ${Math.random() * 360}`
+    };
+}
+
+// Add a random shape to the scene
+function addRandomShape() {
+    const shapesContainer = document.getElementById('dynamic-shapes');
+    const props = getRandomShapeProperties();
+    shapeCounter++;
+    
+    // Create a new shape entity
+    const shape = document.createElement('a-entity');
+    shape.setAttribute('id', `shape-${shapeCounter}`);
+    shape.setAttribute('visible', 'true');
+    
+    // Create the shape
+    shape.innerHTML = `
+        <a-${props.shape} 
+            position="${props.position}"
+            material="color: ${props.color}"
+            scale="${props.scale}"
+            rotation="${props.rotation}">
+        </a-${props.shape}>
+    `;
+    
+    shapesContainer.appendChild(shape);
+    
+    // Remove shape after 30 seconds to prevent clutter
+    setTimeout(() => {
+        if (shape.parentNode) {
+            shape.parentNode.removeChild(shape);
+        }
+    }, 3000);
+}
+
+// Add the "I Voted" sticker image to the scene
+function addVotedSticker() {
+    const imagesContainer = document.getElementById('dynamic-images');
+    imageCounter++;
+    
+    // Create a new image entity
+    const image = document.createElement('a-image');
+    image.setAttribute('id', `image-${imageCounter}`);
+    image.setAttribute('src', 'img/iVotedSticker.png');
+    image.setAttribute('position', '0 0 -1'); // 1 meter in front of camera
+    image.setAttribute('scale', '0.1 0.1 0.1'); // Scaled down to 10%
+    image.setAttribute('look-at', '[camera]');
+    
+    // Add fade-out animation
+    image.classList.add('fade-out');
+    
+    imagesContainer.appendChild(image);
+    
+    // Remove image after animation completes
+    setTimeout(() => {
+        if (image.parentNode) {
+            image.parentNode.removeChild(image);
+        }
+    }, 5000);
+}
+
+// Setup tap event listener
 function setupTapEvents() {
-    document.addEventListener('click', () => {
-        if (currentProximityLocation) {
-            addLocationShape();
+    document.addEventListener('click', function() {
+        if (currentProximityLocation && currentProximityLocation.id === 0) {
+            // Near Susan B. Anthony's grave - show sticker
+            addVotedSticker();
+        } else {
+            // Not near a special location - show random shape
+            addRandomShape();
         }
     });
 }
 
-function addLocationShape() {
-    const location = currentProximityLocation;
-    shapeCounter++;
+function setupGeolocation() {
+    const locationStatus = document.getElementById('location-status');
     
-    const shapesContainer = document.getElementById('dynamic-shapes');
-    const shape = document.createElement('a-entity');
-    shape.setAttribute('id', `shape-${location.id}-${shapeCounter}`);
+    if (!navigator.geolocation) {
+        locationStatus.textContent = "Geolocation not supported";
+        locationStatus.style.display = 'block';
+        return;
+    }
     
-    // Random position offset
-    const xOffset = (Math.random() * 0.5) - 0.25;
-    const zOffset = (Math.random() * 0.5) - 0.25;
-    const position = `${xOffset} ${parseFloat(location.position.split(' ')[1])} ${zOffset}`;
+    locationStatus.style.display = 'block';
+    locationStatus.textContent = "Acquiring precise location...";
     
-    shape.innerHTML = `
-        <a-${location.shape} 
-            position="${position}"
-            material="color: ${location.color}"
-            scale="${location.scale}">
-        </a-${location.shape}>
-        <a-text 
-            value="${location.name}"
-            position="0 ${parseFloat(location.position.split(' ')[1]) + 0.5} 0"
-            align="center"
-            color="#FFFFFF"
-            scale="0.5 0.5 0.5">
-        </a-text>
-    `;
+    // First try with high accuracy
+    const highAccuracyOptions = {
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        timeout: 10000
+    };
     
-    shapesContainer.appendChild(shape);
-    showLocationStatusMessage(`Added ${location.name} shape!`);
+    const fallbackOptions = {
+        enableHighAccuracy: false,
+        maximumAge: 30000,
+        timeout: 15000
+    };
+    
+    function handlePosition(position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy;
+        
+        console.log(`Raw position: ${lat}, ${lng} (±${accuracy}m)`);
+        
+        // During testing, let's be more lenient with accuracy
+        const MAX_TESTING_ACCURACY = 50; // meters - adjust as needed
+        if (accuracy > MAX_TESTING_ACCURACY) {
+            console.warn(`Low accuracy (${Math.round(accuracy)}m), but proceeding for testing`);
+            // Continue anyway for testing purposes
+        }
+        
+        currentLat = lat;
+        currentLng = lng;
+        
+        locationStatus.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}\nAccuracy: ${Math.round(accuracy)}m`;
+        locationStatus.style.display = 'block';
+        
+        checkProximity(lat, lng);
+    }
+    
+    function handleError(error) {
+        let message = "Error: ";
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                message += "Location permission denied";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                message += "Location unavailable";
+                break;
+            case error.TIMEOUT:
+                message += "Location request timed out";
+                break;
+            default:
+                message += "Unknown error";
+        }
+        locationStatus.textContent = message;
+    }
+    
+    // Start with high accuracy request
+    navigator.geolocation.getCurrentPosition(handlePosition, handleError, highAccuracyOptions);
+    
+    // Then set up the watcher with best available settings
+    const watchId = navigator.geolocation.watchPosition(
+        handlePosition,
+        handleError,
+        highAccuracyOptions
+    );
 }
 
-// Set up touch feedback for buttons
-function setupTouchFeedback() {
-    document.querySelectorAll('.tab-button, .clue-header').forEach(button => {
-        button.addEventListener('touchstart', () => button.style.transform = 'scale(0.95)');
-        button.addEventListener('touchend', () => button.style.transform = '');
-    });
-}
-
-// Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+// Handle window resize
+window.addEventListener('resize', function() {
+    const scene = document.querySelector('a-scene');
+    if (scene) {
+        scene.style.width = window.innerWidth + 'px';
+        scene.style.height = window.innerHeight + 'px';
+    }
+});
