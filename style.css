@@ -3,6 +3,12 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+/* Ensure images appear above other AR content */
+a-image {
+    pointer-events: none;
+    z-index: 9999;
+}
+
 body {
     margin: 0;
     padding: 0;

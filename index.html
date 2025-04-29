@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Mt. Hope Cemetery AR Experience</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
@@ -21,41 +23,54 @@
         .fade-out {
             animation: fadeOut 5s forwards;
         }
+
         @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- AR Scene -->
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" 
-    vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true; precision: mediump; colorManagement: true;"
-    style="width: 100%; height: 100%; position: absolute;">
-        
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: mediump; colorManagement: true;"
+        style="width: 100%; height: 100%; position: absolute;">
+
         <!-- Container for dynamically added shapes -->
         <a-entity id="dynamic-shapes"></a-entity>
-        
+
         <!-- Container for images -->
         <a-entity id="dynamic-images"></a-entity>
-        
+
         <!-- Camera setup -->
-        <a-entity camera="userHeight: 1.6" arjs-device-orientation-controls smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5"></a-entity>
-        
+        <a-entity camera="userHeight: 1.6" arjs-device-orientation-controls smooth="true" smoothCount="10"
+            smoothTolerance="0.01" smoothThreshold="5"></a-entity>
+
+        <!-- Add this entity for images (positioned in world space) -->
+        <a-entity id="dynamic-images" position="0 0 0" rotation="0 0 0">
+        </a-entity>
+
     </a-scene>
-</div>
-    
+    </div>
+    <div id="tap-instruction" style="display: none;">
+        Tap the screen to place AR objects!
+    </div>
     <!-- Proximity indicator -->
     <div id="proximity-indicator" class="proximity-indicator">
         You're getting close to a clue location!
     </div>
-    
+
     <!-- Location status indicator -->
     <div id="location-status">
         Acquiring location...
     </div>
-    
+
     <!-- Tab Buttons -->
     <button class="tab-button" id="left-tab-button" aria-label="Open clues">
         <span style="font-size: inherit">☰</span>
@@ -63,12 +78,12 @@
     <button class="tab-button" id="right-tab-button" aria-label="Open help">
         <span style="font-size: inherit">?</span>
     </button>
-    
+
     <!-- Left Tab (Clues) -->
     <div class="tab" id="left-tab">
         <button class="close-tab" aria-label="Close tab">×</button>
         <h2 class="tab-title">Clues</h2>
-        
+
         <div class="clue-item" data-location-id="0">
             <div class="clue-header">
                 <div class="status-indicator"></div>
@@ -83,7 +98,7 @@
                 </ul>
             </div>
         </div>
-        
+
         <div class="clue-item" data-location-id="1">
             <div class="clue-header">
                 <div class="status-indicator"></div>
@@ -94,11 +109,12 @@
                 <ul>
                     <li>This area of the Cemetery is a unique environment for many critters</li>
                     <li>Found fairly central, this location is within reasonable bounds from all Cemetery entrances</li>
-                    <li>If you need a nice spot to relax in the summertime, this area's many benches may be suitable</li>
+                    <li>If you need a nice spot to relax in the summertime, this area's many benches may be suitable
+                    </li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="clue-item" data-location-id="2">
             <div class="clue-header">
                 <div class="status-indicator"></div>
@@ -109,11 +125,12 @@
                 <ul>
                     <li>This historical site is dedicated to many who lost their lives in an infamous American war</li>
                     <li>This site isn't just one person's gravestone, but many</li>
-                    <li>Located closest to University of Rochester entrance, this area corners between some of the more structured cemetery plots and the more wild areas</li>
+                    <li>Located closest to University of Rochester entrance, this area corners between some of the more
+                        structured cemetery plots and the more wild areas</li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="clue-item" data-location-id="3">
             <div class="clue-header">
                 <div class="status-indicator"></div>
@@ -122,13 +139,15 @@
             </div>
             <div class="clue-content">
                 <ul>
-                    <li>This historical figure was a leading figure in the Abolitionist movement, having escaped from slavery to his home and resting place in Rochester</li>
+                    <li>This historical figure was a leading figure in the Abolitionist movement, having escaped from
+                        slavery to his home and resting place in Rochester</li>
                     <li>His headstone is accompanied by a plaque, and several signs even point the way to it</li>
-                    <li>You may just be able to see his headstone from Mt. Hope Avenue - if you climbed atop a roof to look over the hill it stands on</li>
+                    <li>You may just be able to see his headstone from Mt. Hope Avenue - if you climbed atop a roof to
+                        look over the hill it stands on</li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="clue-item" data-location-id="4">
             <div class="clue-header">
                 <div class="status-indicator"></div>
@@ -137,13 +156,16 @@
             </div>
             <div class="clue-content">
                 <ul>
-                    <li>This portion of Mt. Hope Cemetery is most in bloom during August, when a certain floral organization plants an incredible amount of flowers both here and around the cemetery</li>
-                    <li>While on a slight incline, this area invites you to take a safe step downward into a man-made divot</li>
-                    <li>Found just off the main path from the Southern Mt. Hope Avenue entrance, if you continued uphill from this location you would get a nice view of the surrounding areas</li>
+                    <li>This portion of Mt. Hope Cemetery is most in bloom during August, when a certain floral
+                        organization plants an incredible amount of flowers both here and around the cemetery</li>
+                    <li>While on a slight incline, this area invites you to take a safe step downward into a man-made
+                        divot</li>
+                    <li>Found just off the main path from the Southern Mt. Hope Avenue entrance, if you continued uphill
+                        from this location you would get a nice view of the surrounding areas</li>
                 </ul>
             </div>
         </div>
-        
+
         <div class="clue-item" data-location-id="5">
             <div class="clue-header">
                 <div class="status-indicator"></div>
@@ -152,25 +174,28 @@
             </div>
             <div class="clue-content">
                 <ul>
-                    <li>This monument to a historical figure can be found near the joining of two corners of the Cemetery</li>
-                    <li>This person dates back to the Revolutionary War, and was George Washington's Drummer Boy during that time</li>
-                    <li>While a bit tricky to find, this headstone is close to a corner plot marker and stands roughly twice as high as surrounding stones</li>
+                    <li>This monument to a historical figure can be found near the joining of two corners of the
+                        Cemetery</li>
+                    <li>This person dates back to the Revolutionary War, and was George Washington's Drummer Boy during
+                        that time</li>
+                    <li>While a bit tricky to find, this headstone is close to a corner plot marker and stands roughly
+                        twice as high as surrounding stones</li>
                 </ul>
             </div>
         </div>
     </div>
-    
+
     <!-- Right Tab (Help/Info) -->
     <div class="tab" id="right-tab">
         <button class="close-tab" aria-label="Close tab">×</button>
         <h2>Help Center</h2>
-        
+
         <div class="help-section">
             <h3>Using This App</h3>
             <p>Point your camera around to see AR content. 3D objects will appear when you tap the screen.</p>
             <p>Tap anywhere on the screen to spawn random 3D objects in your environment!</p>
         </div>
-        
+
         <div class="help-section">
             <h3>Location Features</h3>
             <p>The app will automatically check off clues when you reach specific locations in the cemetery.</p>
@@ -178,4 +203,5 @@
         </div>
     </div>
 </body>
+
 </html>
