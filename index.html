@@ -12,12 +12,12 @@
     <!-- External libraries -->
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.loaders.min.js"></script>
 
-    <!-- Your external scripts -->
     <script src="locations.js"></script>
     <script src="app.js"></script>
 
-    <!-- Your external stylesheet -->
     <link rel="stylesheet" href="style.css">
     <style>
         .fade-out {
@@ -33,14 +33,22 @@
                 opacity: 0;
             }
         }
+
+        /* Add styles for 3D object container */
+        #dynamic-objects {
+            position: absolute;
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
-    <!-- AR Scene -->
     <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true; precision: mediump; colorManagement: true;"
         style="width: 100%; height: 100%; position: absolute;">
+
+        <!-- Container for dynamically added 3D objects -->
+        <a-entity id="dynamic-objects"></a-entity>
 
         <!-- Container for dynamically added shapes -->
         <a-entity id="dynamic-shapes"></a-entity>
@@ -52,12 +60,9 @@
         <a-entity camera="userHeight: 1.6" arjs-device-orientation-controls smooth="true" smoothCount="10"
             smoothTolerance="0.01" smoothThreshold="5"></a-entity>
 
-        <!-- Add this entity for images (positioned in world space) -->
-        <a-entity id="dynamic-images" position="0 0 0" rotation="0 0 0">
-        </a-entity>
-
     </a-scene>
-    </div>
+
+    <!-- Rest of your HTML remains the same -->
     <div id="tap-instruction" style="display: none;">
         Tap the screen to place AR objects!
     </div>

@@ -3,6 +3,11 @@ let currentProximityLocation = null;
 let imageCounter = 0;
 let currentLat = null;
 let currentLng = null;
+let activeObjects = {};
+
+// Track daffodil model rotation
+let currentDaffodilModel = 1;
+const totalDaffodilModels = 3;
 
 // Convert screen coordinates to AR world coordinates
 function getWorldPosition(clientX, clientY) {
@@ -19,6 +24,49 @@ function getWorldPosition(clientX, clientY) {
         y: y * distance,
         z: -distance  // Negative Z = in front of camera
     };
+}
+
+// Generic function to add a 3D object at tap position
+function add3DObject(event, objPath, mtlPath, scale = '0.1 0.1 0.1') {
+    const objectsContainer = document.getElementById('dynamic-objects');
+    if (!objectsContainer) return;
+    
+    const pos = getWorldPosition(event.clientX, event.clientY);
+    
+    const obj = document.createElement('a-entity');
+    const objId = `obj-${Date.now()}`; // Unique ID based on timestamp
+    obj.setAttribute('id', objId);
+    
+    // Set object properties
+    obj.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
+    obj.setAttribute('scale', scale);
+    obj.setAttribute('look-at', '[camera]');
+    
+    // Add OBJ model component
+    obj.setAttribute('obj-model', {
+        obj: objPath,
+        mtl: mtlPath
+    });
+
+    objectsContainer.appendChild(obj);
+
+    // Wait for model to load
+    obj.addEventListener('model-loaded', () => {
+        // Set initial material properties
+        obj.object3D.traverse(child => {
+            if (child.material) {
+                child.material.transparent = true;
+                child.material.opacity = 1;
+            }
+        });
+    });
+
+    // Remove after timeout (if still desired)
+    setTimeout(() => {
+        if (obj.parentNode) {
+            objectsContainer.removeChild(obj);
+        }
+    }, 250);
 }
 
 // Generic function to add an image
@@ -52,38 +100,39 @@ function addVotedSticker(event) {
     addImage(event, 'img/iVotedSticker.png');
 }
 
-// Sylvan Waters image
+// Updated sylvan function to work like iVoted
 function sylvanImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 1) {
-        addImage(event, 'img/sylvanImage.png');
+        add3DObject(event, 'models/sylvan.obj', 'models/sylvan.mtl', '0.5 0.5 0.5');
     }
 }
 
-// Daffodil image
+// Updated daffodil function with model rotation
 function daffodilImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 4) {
-        addImage(event, 'img/daffodilImage.png');
+        const modelNum = currentDaffodilModel;
+        add3DObject(event, `img/daffodil-${modelNum}.obj`, `img/daffodil-${modelNum}.mtl`, '0.05 0.05 0.05');
+        
+        // Rotate to next model
+        currentDaffodilModel = currentDaffodilModel % totalDaffodilModels + 1;
     }
 }
 
-// Frederick Douglass image
 function douglassImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 3) {
-        addImage(event, 'img/douglassImage.png');
+        add3DObject(event, 'models/douglass.obj', 'models/douglass.mtl', '0.4 0.4 0.4');
     }
 }
 
-// Civil War image
 function civilWarImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 2) {
-        addImage(event, 'img/civilWarImage.png');
+        add3DObject(event, 'img/bugle.obj', 'img/bugle.mtl', '0.1 0.1 0.1');
     }
 }
 
-// Miliner image (assuming this is for Drummer Boy's Grave)
 function milinerImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 5) {
-        addImage(event, 'img/milinerImage.png');
+        add3DObject(event, 'img/drum.obj', 'img/drum.mtl', '0.2 0.2 0.2');
     }
 }
 
@@ -242,15 +291,13 @@ function printCurrentLocation() {
     }
 }
 
-// Initialize everything
+// Update your click handler to pass the event
 document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     setupGeolocation();
     
-    // Click handler for stickers (ignores UI clicks)
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.tab, .tab-button, .clue-header')) {
-            // Check current location and call appropriate function
             if (currentProximityLocation) {
                 switch(currentProximityLocation.id) {
                     case 0: addVotedSticker(event); break;
