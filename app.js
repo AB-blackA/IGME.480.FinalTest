@@ -26,6 +26,10 @@ function getWorldPosition(clientX, clientY) {
     };
 }
 
+function checkAllCluesCompleted() {
+    return LOCATIONS.every(location => location.completed);
+}
+
 // Generic function to add a 3D object at tap position
 function add3DObject(event, objPath, mtlPath, scale = '0.1 0.1 0.1') {
     const objectsContainer = document.getElementById('dynamic-objects');
@@ -66,7 +70,7 @@ function add3DObject(event, objPath, mtlPath, scale = '0.1 0.1 0.1') {
         if (obj.parentNode) {
             objectsContainer.removeChild(obj);
         }
-    }, 250);
+    }, 2500);
 }
 
 // Generic function to add an image
@@ -103,7 +107,7 @@ function addVotedSticker(event) {
 // Updated sylvan function to work like iVoted
 function sylvanImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 1) {
-        add3DObject(event, 'models/sylvan.obj', 'models/sylvan.mtl', '0.5 0.5 0.5');
+        add3DObject(event, 'img/cattails.obj', 'img/cattails.mtl', '0.1 0.1 0.1');
     }
 }
 
@@ -120,7 +124,7 @@ function daffodilImage(event) {
 
 function douglassImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 3) {
-        add3DObject(event, 'models/douglass.obj', 'models/douglass.mtl', '0.4 0.4 0.4');
+        add3DObject(event, 'img/candle.obj', 'img/candle.mtl', '0.1 0.1 0.1');
     }
 }
 
@@ -221,12 +225,51 @@ function markClueCompleted(clueIndex) {
     if (clueIndex >= 0 && clueIndex < clues.length) {
         const indicator = clues[clueIndex].querySelector('.status-indicator');
         indicator.classList.add('completed');
-
+        
         const statusEl = document.getElementById('location-status');
         statusEl.textContent = `Visited ${LOCATIONS[clueIndex].name}!`;
         statusEl.style.display = 'block';
         setTimeout(() => statusEl.style.display = 'none', 3000);
+
+        // Check if all clues are now completed
+        if (checkAllCluesCompleted()) {
+            showCelebration();
+        }
     }
+}
+
+function triggerCelebrationForTesting() {
+    // First mark all clues as completed for testing
+    LOCATIONS.forEach(location => {
+        location.completed = true;
+        const indicator = document.querySelector(`.clue-item[data-location-id="${location.id}"] .status-indicator`);
+        if (indicator) {
+            indicator.classList.add('completed');
+        }
+    });
+    
+    // Then show the celebration
+    showCelebration();
+    
+    console.log("Celebration manually triggered for testing");
+}
+
+function showCelebration() {
+    const overlay = document.getElementById('celebration-overlay');
+    overlay.style.display = 'flex';
+    
+    // Load the Tenor script if not already loaded
+    if (!window.tgif) {
+        const script = document.createElement('script');
+        script.src = 'https://tenor.com/embed.js';
+        script.async = true;
+        document.body.appendChild(script);
+    }
+    
+    // Hide after 20 seconds
+    setTimeout(() => {
+        overlay.style.display = 'none';
+    }, 20000);
 }
 
 function setupGeolocation() {
@@ -352,6 +395,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('check-location-btn').addEventListener('touchend', function () {
         this.style.transform = 'translateX(-50%)';
     });
+
+    const testBtn = document.getElementById('test-celebration-btn');
+    testBtn.style.display = 'block';
+    testBtn.addEventListener('click', triggerCelebrationForTesting);
 
     window.dispatchEvent(new Event('resize'));
 });
