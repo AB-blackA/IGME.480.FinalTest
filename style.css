@@ -9,6 +9,39 @@ a-image {
     z-index: 9999;
 }
 
+
+/* Location check button styles */
+.location-check-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(76, 195, 217, 0.9);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+.location-check-btn:active {
+    transform: translateX(-50%) scale(0.95);
+    background: rgba(76, 195, 217, 1);
+}
+
+/* Mobile responsive adjustments */
+@media screen and (max-width: 768px) {
+    .location-check-btn {
+        padding: 15px 30px;
+        font-size: 18px;
+        bottom: 30px;
+    }
+}
 body {
     margin: 0;
     padding: 0;

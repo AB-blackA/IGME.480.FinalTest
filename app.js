@@ -14,10 +14,10 @@ function getWorldPosition(clientX, clientY) {
     // Normalize screen coordinates (-1 to 1)
     const x = (clientX / window.innerWidth) * 2 - 1;
     const y = -(clientY / window.innerHeight) * 2 + 1;
-    
+
     // Place the sticker 1 meter away from camera
     const distance = 1;
-    
+
     // Calculate position in world space
     return {
         x: x * distance,
@@ -30,18 +30,18 @@ function getWorldPosition(clientX, clientY) {
 function add3DObject(event, objPath, mtlPath, scale = '0.1 0.1 0.1') {
     const objectsContainer = document.getElementById('dynamic-objects');
     if (!objectsContainer) return;
-    
+
     const pos = getWorldPosition(event.clientX, event.clientY);
-    
+
     const obj = document.createElement('a-entity');
     const objId = `obj-${Date.now()}`; // Unique ID based on timestamp
     obj.setAttribute('id', objId);
-    
+
     // Set object properties
     obj.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
     obj.setAttribute('scale', scale);
     obj.setAttribute('look-at', '[camera]');
-    
+
     // Add OBJ model component
     obj.setAttribute('obj-model', {
         obj: objPath,
@@ -73,9 +73,9 @@ function add3DObject(event, objPath, mtlPath, scale = '0.1 0.1 0.1') {
 function addImage(event, imageSrc, scale = '0.3 0.3 0.3') {
     const imagesContainer = document.getElementById('dynamic-images');
     if (!imagesContainer) return;
-    
+
     const pos = getWorldPosition(event.clientX, event.clientY);
-    
+
     imageCounter++;
     const image = document.createElement('a-image');
     image.setAttribute('id', `sticker-${imageCounter}`);
@@ -85,9 +85,9 @@ function addImage(event, imageSrc, scale = '0.3 0.3 0.3') {
     image.setAttribute('material', 'shader: flat; transparent: true');
     image.setAttribute('look-at', '[camera]');
     image.setAttribute('animation', 'property: material.opacity; to: 0; dur: 5000');
-    
+
     imagesContainer.appendChild(image);
-    
+
     setTimeout(() => {
         if (image.parentNode) {
             image.parentNode.removeChild(image);
@@ -112,7 +112,7 @@ function daffodilImage(event) {
     if (currentProximityLocation && currentProximityLocation.id === 4) {
         const modelNum = currentDaffodilModel;
         add3DObject(event, `img/daffodil-${modelNum}.obj`, `img/daffodil-${modelNum}.mtl`, '0.05 0.05 0.05');
-        
+
         // Rotate to next model
         currentDaffodilModel = currentDaffodilModel % totalDaffodilModels + 1;
     }
@@ -143,28 +143,28 @@ function setupTabs() {
     const leftTab = document.getElementById('left-tab');
     const rightTab = document.getElementById('right-tab');
     const closeButtons = document.querySelectorAll('.close-tab');
-    
+
     leftTabButton.addEventListener('click', () => {
         rightTab.classList.remove('open');
         leftTab.classList.toggle('open');
     });
-    
+
     rightTabButton.addEventListener('click', () => {
         leftTab.classList.remove('open');
         rightTab.classList.toggle('open');
     });
-    
+
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
             button.closest('.tab').classList.remove('open');
         });
     });
-    
+
     document.querySelectorAll('.clue-header').forEach(header => {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function () {
             const item = this.parentElement;
             item.classList.toggle('expanded');
-            this.querySelector('.expand-icon').textContent = 
+            this.querySelector('.expand-icon').textContent =
                 item.classList.contains('expanded') ? '-' : '+';
         });
     });
@@ -173,15 +173,15 @@ function setupTabs() {
 // GPS functions
 function getDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3;
-    const φ1 = lat1 * Math.PI/180;
-    const φ2 = lat2 * Math.PI/180;
-    const Δφ = (lat2-lat1) * Math.PI/180;
-    const Δλ = (lon2-lon1) * Math.PI/180;
+    const φ1 = lat1 * Math.PI / 180;
+    const φ2 = lat2 * Math.PI / 180;
+    const Δφ = (lat2 - lat1) * Math.PI / 180;
+    const Δλ = (lon2 - lon1) * Math.PI / 180;
 
-    const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-              Math.cos(φ1) * Math.cos(φ2) *
-              Math.sin(Δλ/2) * Math.sin(Δλ/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) *
+        Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
     return R * c;
 }
@@ -189,25 +189,25 @@ function getDistance(lat1, lon1, lat2, lon2) {
 function checkProximity(lat, lng) {
     let closestDistance = Infinity;
     let closestLocation = null;
-    
+
     LOCATIONS.forEach(location => {
         const distance = getDistance(lat, lng, location.lat, location.lng);
         location.inProximity = distance <= location.radius * 1.5;
-        
+
         if (location.inProximity && distance < closestDistance) {
             closestDistance = distance;
             closestLocation = location;
         }
-        
+
         if (distance <= location.radius && !location.completed) {
             location.completed = true;
             markClueCompleted(location.id);
         }
     });
-    
+
     currentProximityLocation = closestLocation;
     const proximityIndicator = document.getElementById('proximity-indicator');
-    
+
     if (closestLocation && !closestLocation.completed) {
         proximityIndicator.textContent = `Near ${closestLocation.name} (${Math.round(closestDistance)}m away)`;
         proximityIndicator.style.display = 'block';
@@ -221,7 +221,7 @@ function markClueCompleted(clueIndex) {
     if (clueIndex >= 0 && clueIndex < clues.length) {
         const indicator = clues[clueIndex].querySelector('.status-indicator');
         indicator.classList.add('completed');
-        
+
         const statusEl = document.getElementById('location-status');
         statusEl.textContent = `Visited ${LOCATIONS[clueIndex].name}!`;
         statusEl.style.display = 'block';
@@ -231,35 +231,35 @@ function markClueCompleted(clueIndex) {
 
 function setupGeolocation() {
     const locationStatus = document.getElementById('location-status');
-    
+
     if (!navigator.geolocation) {
         locationStatus.textContent = "Geolocation not supported";
         locationStatus.style.display = 'block';
         return;
     }
-    
+
     const handlePosition = (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
         const accuracy = position.coords.accuracy;
         currentLat = lat;
         currentLng = lng;
-        
+
         // Update persistent status display
         locationStatus.textContent = `Lat: ${lat.toFixed(6)}\nLng: ${lng.toFixed(6)}\nAccuracy: ${Math.round(accuracy)}m`;
         locationStatus.style.display = 'block';
-        
+
         // Show temporary floating coordinates
         // showTemporaryCoordinates(lat, lng);
         checkProximity(lat, lng);
     };
-    
+
     const handleError = (error) => {
         console.error("Geolocation error:", error);
         locationStatus.textContent = `Error: ${error.message}`;
         locationStatus.style.display = 'block';
     };
-    
+
     navigator.geolocation.watchPosition(
         handlePosition,
         handleError,
@@ -271,12 +271,12 @@ function setLocation(id) {
     // Make sure the ID is valid
     if (id >= 0 && id < LOCATIONS.length) {
         currentProximityLocation = LOCATIONS[id];
-        
+
         // Update the proximity indicator for testing
         const proximityIndicator = document.getElementById('proximity-indicator');
         proximityIndicator.textContent = `TESTING: Near ${LOCATIONS[id].name}`;
         proximityIndicator.style.display = 'block';
-        
+
         console.log(`Location set to: ${LOCATIONS[id].name}`);
     } else {
         console.error(`Invalid location ID: ${id}`);
@@ -295,11 +295,11 @@ function printCurrentLocation() {
 document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     setupGeolocation();
-    
+
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.tab, .tab-button, .clue-header')) {
             if (currentProximityLocation) {
-                switch(currentProximityLocation.id) {
+                switch (currentProximityLocation.id) {
                     case 0: addVotedSticker(event); break;
                     case 1: sylvanImage(event); break;
                     case 2: civilWarImage(event); break;
@@ -313,13 +313,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
-    
+
     // Touch feedback for buttons
     document.querySelectorAll('.tab-button, .clue-header').forEach(btn => {
         btn.addEventListener('touchstart', () => btn.style.transform = 'scale(0.95)');
         btn.addEventListener('touchend', () => btn.style.transform = '');
     });
-    
+
     // Handle window resize for AR scene
     window.addEventListener('resize', () => {
         const scene = document.querySelector('a-scene');
@@ -328,5 +328,30 @@ document.addEventListener('DOMContentLoaded', () => {
             scene.style.height = window.innerHeight + 'px';
         }
     });
+
+    // Add this in your DOMContentLoaded event listener or initialization function
+    document.getElementById('check-location-btn').addEventListener('click', () => {
+        if (currentLat && currentLng) {
+            checkProximity(currentLat, currentLng);
+            const statusEl = document.getElementById('location-status');
+            statusEl.textContent = `Location checked!\nLat: ${currentLat.toFixed(6)}\nLng: ${currentLng.toFixed(6)}`;
+            statusEl.style.display = 'block';
+            setTimeout(() => statusEl.style.display = 'none', 3000);
+        } else {
+            const statusEl = document.getElementById('location-status');
+            statusEl.textContent = "Location not available yet...";
+            statusEl.style.display = 'block';
+            setTimeout(() => statusEl.style.display = 'none', 3000);
+        }
+    });
+
+    // Also add touch feedback for mobile
+    document.getElementById('check-location-btn').addEventListener('touchstart', function () {
+        this.style.transform = 'translateX(-50%) scale(0.95)';
+    });
+    document.getElementById('check-location-btn').addEventListener('touchend', function () {
+        this.style.transform = 'translateX(-50%)';
+    });
+
     window.dispatchEvent(new Event('resize'));
 });
