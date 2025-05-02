@@ -63,7 +63,7 @@ const LOCATIONS = [
         //lng: -77.617,
         lat: 43.127,
         lng: -77.613,
-        radius: 35,
+        radius: 100,
         completed: false,
         inProximity: false,
         color: "#FF33F0",
