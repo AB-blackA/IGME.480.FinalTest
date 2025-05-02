@@ -3,6 +3,7 @@ const LOCATIONS = [
     { // Susan B. Anthony's Grave
         id: 0,
         name: "Stickered Sentinel",
+        trueName: "Susan B. Anthony",
         lat: 43.1346,
         lng: -77.6156,
         //lat: 43.127,
@@ -18,6 +19,7 @@ const LOCATIONS = [
     { // Sylvan Waters
         id: 1,
         name: "Quiet Pond",
+        trueName: "Sylvan Waters",
         lat: 43.130,
         lng: -77.616,
         //lat: 43.127,
@@ -33,6 +35,7 @@ const LOCATIONS = [
     { // Civil War Memorial
         id: 2,
         name: "Silent Regiment",
+        trueName: "Civil War Memorial",
         lat: 43.129,
         lng: -77.624,
         radius: 100,
@@ -46,6 +49,7 @@ const LOCATIONS = [
     { // Frederick Douglass' Grave
         id: 3,
         name: "Watcher on the Hill",
+        trueName: "Frederick Douglass",
         lat: 43.131,
         lng: -77.614,
         radius: 100,
@@ -59,6 +63,7 @@ const LOCATIONS = [
     { // Daffidel Project
         id: 4,
         name: "Blooming Hollow",
+        trueName: "Daffodil Project",
         //lat: 43.130,
         //lng: -77.617,
         lat: 43.127,
@@ -74,6 +79,7 @@ const LOCATIONS = [
     { // Drummer Boy's Grave
         id: 5,
         name: "Drummer Boy's Grave",
+        trueName: "Alexander Millener",
         lat: 43.125,
         lng: -77.619,
         radius: 100,

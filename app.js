@@ -227,7 +227,7 @@ function markClueCompleted(clueIndex) {
         indicator.classList.add('completed');
         
         const statusEl = document.getElementById('location-status');
-        statusEl.textContent = `Visited ${LOCATIONS[clueIndex].name}!`;
+        statusEl.textContent = `Visited ${LOCATIONS[clueIndex].trueName}!`;
         statusEl.style.display = 'block';
         setTimeout(() => statusEl.style.display = 'none', 3000);
 
@@ -396,9 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
         this.style.transform = 'translateX(-50%)';
     });
 
-    const testBtn = document.getElementById('test-celebration-btn');
+    /* const testBtn = document.getElementById('test-celebration-btn');
     testBtn.style.display = 'block';
-    testBtn.addEventListener('click', triggerCelebrationForTesting);
+    testBtn.addEventListener('click', triggerCelebrationForTesting); */
 
     window.dispatchEvent(new Event('resize'));
 });
