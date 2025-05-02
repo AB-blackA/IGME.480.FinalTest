@@ -21,8 +21,8 @@ function getWorldPosition(clientX, clientY) {
     };
 }
 
-// Add sticker at clicked position
-function addVotedSticker(event) {
+// Generic function to add an image
+function addImage(event, imageSrc, scale = '0.3 0.3 0.3') {
     const imagesContainer = document.getElementById('dynamic-images');
     if (!imagesContainer) return;
     
@@ -31,9 +31,9 @@ function addVotedSticker(event) {
     imageCounter++;
     const image = document.createElement('a-image');
     image.setAttribute('id', `sticker-${imageCounter}`);
-    image.setAttribute('src', 'img/iVotedSticker.png');
+    image.setAttribute('src', imageSrc);
     image.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
-    image.setAttribute('scale', '0.3 0.3 0.3');
+    image.setAttribute('scale', scale);
     image.setAttribute('material', 'shader: flat; transparent: true');
     image.setAttribute('look-at', '[camera]');
     image.setAttribute('animation', 'property: material.opacity; to: 0; dur: 5000');
@@ -45,6 +45,46 @@ function addVotedSticker(event) {
             image.parentNode.removeChild(image);
         }
     }, 5000);
+}
+
+// Add sticker at clicked position
+function addVotedSticker(event) {
+    addImage(event, 'img/iVotedSticker.png');
+}
+
+// Sylvan Waters image
+function sylvanImage(event) {
+    if (currentProximityLocation && currentProximityLocation.id === 1) {
+        addImage(event, 'img/sylvanImage.png');
+    }
+}
+
+// Daffodil image
+function daffodilImage(event) {
+    if (currentProximityLocation && currentProximityLocation.id === 4) {
+        addImage(event, 'img/daffodilImage.png');
+    }
+}
+
+// Frederick Douglass image
+function douglassImage(event) {
+    if (currentProximityLocation && currentProximityLocation.id === 3) {
+        addImage(event, 'img/douglassImage.png');
+    }
+}
+
+// Civil War image
+function civilWarImage(event) {
+    if (currentProximityLocation && currentProximityLocation.id === 2) {
+        addImage(event, 'img/civilWarImage.png');
+    }
+}
+
+// Miliner image (assuming this is for Drummer Boy's Grave)
+function milinerImage(event) {
+    if (currentProximityLocation && currentProximityLocation.id === 5) {
+        addImage(event, 'img/milinerImage.png');
+    }
 }
 
 // Tab functionality
@@ -161,7 +201,7 @@ function setupGeolocation() {
         locationStatus.style.display = 'block';
         
         // Show temporary floating coordinates
-        showTemporaryCoordinates(lat, lng);
+        // showTemporaryCoordinates(lat, lng);
         checkProximity(lat, lng);
     };
     
@@ -178,6 +218,30 @@ function setupGeolocation() {
     );
 }
 
+function setLocation(id) {
+    // Make sure the ID is valid
+    if (id >= 0 && id < LOCATIONS.length) {
+        currentProximityLocation = LOCATIONS[id];
+        
+        // Update the proximity indicator for testing
+        const proximityIndicator = document.getElementById('proximity-indicator');
+        proximityIndicator.textContent = `TESTING: Near ${LOCATIONS[id].name}`;
+        proximityIndicator.style.display = 'block';
+        
+        console.log(`Location set to: ${LOCATIONS[id].name}`);
+    } else {
+        console.error(`Invalid location ID: ${id}`);
+    }
+}
+
+function printCurrentLocation() {
+    if (currentProximityLocation) {
+        console.log(`Current location: ${currentProximityLocation.name} (ID: ${currentProximityLocation.id})`);
+    } else {
+        console.log("No current location set");
+    }
+}
+
 // Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
@@ -186,7 +250,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Click handler for stickers (ignores UI clicks)
     document.addEventListener('click', (event) => {
         if (!event.target.closest('.tab, .tab-button, .clue-header')) {
-            addVotedSticker(event);
+            // Check current location and call appropriate function
+            if (currentProximityLocation) {
+                switch(currentProximityLocation.id) {
+                    case 0: addVotedSticker(event); break;
+                    case 1: sylvanImage(event); break;
+                    case 2: civilWarImage(event); break;
+                    case 3: douglassImage(event); break;
+                    case 4: daffodilImage(event); break;
+                    case 5: milinerImage(event); break;
+                    default: addVotedSticker(event);
+                }
+            } else {
+                addVotedSticker(event);
+            }
         }
     });
     
